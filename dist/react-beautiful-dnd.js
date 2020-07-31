@@ -7175,10 +7175,6 @@
   };
 
   var getDistanceThresholds = (function (container, axis, isCloserToEnd, contentBox) {
-    if (axis.direction === 'horizontal') {
-        console.log('axis', 'aaaaaaaaaaaa1212333', contentBox, axis.size, container[axis.size], container[axis.size] * config.startFromPercentage, axis, container);
-      }
-
     var startScrollingFrom = container[axis.size] * config.startFromPercentage;
     var maxScrollValueAt = container[axis.size] * config.maxScrollAtPercentage;
 
