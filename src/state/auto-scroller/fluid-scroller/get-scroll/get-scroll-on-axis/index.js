@@ -12,6 +12,7 @@ type GetOnAxisArgs = {|
   dragStartTime: number,
   axis: Axis,
   shouldUseTimeDampening: boolean,
+  contentBox?: Rect
 |};
 
 export default ({
@@ -20,10 +21,11 @@ export default ({
   dragStartTime,
   axis,
   shouldUseTimeDampening,
+  contentBox
 }: GetOnAxisArgs): number => {
-  const thresholds: DistanceThresholds = getDistanceThresholds(container, axis);
   const isCloserToEnd: boolean =
     distanceToEdges[axis.end] < distanceToEdges[axis.start];
+  const thresholds: DistanceThresholds = getDistanceThresholds(container, axis, isCloserToEnd, contentBox);
 
   if (isCloserToEnd) {
     return getValue({

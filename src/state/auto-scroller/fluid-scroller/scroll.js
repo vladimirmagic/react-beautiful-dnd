@@ -31,6 +31,7 @@ export default ({
   const draggable: DraggableDimension =
     state.dimensions.draggables[state.critical.draggable.id];
   const subject: Rect = draggable.page.marginBox;
+  const contentBox: Rect = draggable.page.contentBox;
   // 1. Can we scroll the viewport?
   if (state.isWindowScrollAllowed) {
     const viewport: Viewport = state.viewport;
@@ -40,6 +41,7 @@ export default ({
       subject,
       center,
       shouldUseTimeDampening,
+      contentBox
     });
 
     if (change) {

@@ -10,11 +10,22 @@ export type DistanceThresholds = {|
 |};
 
 // converts the percentages in the config into actual pixel values
-export default (container: Rect, axis: Axis): DistanceThresholds => {
-  const startScrollingFrom: number =
+export default (container: Rect, axis: Axis, isCloserToEnd: boolean, contentBox: Rect): DistanceThresholds => {
+  let startScrollingFrom: number =
     container[axis.size] * config.startFromPercentage;
-  const maxScrollValueAt: number =
+  let maxScrollValueAt: number =
     container[axis.size] * config.maxScrollAtPercentage;
+
+  if (axis.direction === 'horizontal' && contentBox) {
+    const center = contentBox.width / 2;
+    if (isCloserToEnd) { // справа
+      maxScrollValueAt = config.startRightFromPixels - config.overlapPixels;
+      startScrollingFrom = center + maxScrollValueAt;
+    } else { // слева
+      maxScrollValueAt = config.startLeftFromPixels - config.overlapPixels;
+      startScrollingFrom = center + maxScrollValueAt;
+    }
+  }
 
   const thresholds: DistanceThresholds = {
     startScrollingFrom,

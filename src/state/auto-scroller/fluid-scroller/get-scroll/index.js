@@ -14,6 +14,7 @@ type Args = {|
   subject: Rect,
   center: Position,
   shouldUseTimeDampening: boolean,
+  contentBox?: Rect
 |};
 
 export default ({
@@ -22,6 +23,7 @@ export default ({
   subject,
   center,
   shouldUseTimeDampening,
+  contentBox
 }: Args): ?Position => {
   // get distance to each edge
   const distanceToEdges: Spacing = {
@@ -52,6 +54,7 @@ export default ({
     dragStartTime,
     axis: horizontal,
     shouldUseTimeDampening,
+    contentBox
   });
 
   const required: Position = clean({ x, y });

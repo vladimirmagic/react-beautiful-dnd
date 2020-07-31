@@ -10,6 +10,7 @@ type Args = {|
   center: Position,
   dragStartTime: number,
   shouldUseTimeDampening: boolean,
+  contentBox?: Rect
 |};
 
 export default ({
@@ -18,6 +19,7 @@ export default ({
   center,
   dragStartTime,
   shouldUseTimeDampening,
+  contentBox
 }: Args): ?Position => {
   const scroll: ?Position = getScroll({
     dragStartTime,
@@ -25,6 +27,7 @@ export default ({
     subject,
     center,
     shouldUseTimeDampening,
+    contentBox
   });
 
   return scroll && canScrollWindow(viewport, scroll) ? scroll : null;

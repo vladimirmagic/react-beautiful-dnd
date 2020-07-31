@@ -8,6 +8,10 @@ const config = {
   // pixels per frame
   maxPixelScroll: 28,
 
+  startLeftFromPixels: 0, // отступ слева, когда начать скролл (например, ширина navpanel)
+  startRightFromPixels: 0,  // отступ справа, когда начать скролл
+  overlapPixels: 0, // сдвиг отступа
+
   // A function used to ease a percentage value
   // A simple linear function would be: (percentage) => percentage;
   // percentage is between 0 and 1

@@ -57,3 +57,5 @@ export type {
   NotDraggingStyle,
   ChildrenFn as DraggableChildrenFn,
 } from './view/draggable/draggable-types';
+
+export { default as scrollConfig } from './state/auto-scroller/fluid-scroller/config';
