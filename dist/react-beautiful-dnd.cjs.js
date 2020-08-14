@@ -6251,7 +6251,7 @@ function useMouseSensor$1(api) {
           y: clientY
         };
         unbindEventsRef.current();
-        startPendingDrag(actions, point);
+        startPendingDrag(actions, point, event);
       }
     };
   }, [api]);
@@ -6291,7 +6291,7 @@ function useMouseSensor$1(api) {
       phase.actions.abort();
     }
   }, [stop]);
-  var bindCapturingEvents = useMemoOne.useCallback(function bindCapturingEvents() {
+  var bindCapturingEvents = useMemoOne.useCallback(function bindCapturingEvents(event) {
     var options = {
       capture: true,
       passive: false
@@ -6301,7 +6301,7 @@ function useMouseSensor$1(api) {
       completed: stop,
       getPhase: getPhase
     };
-    var unbindTarget = bindEvents(window, getHandleBindings(args), options);
+    var unbindTarget = bindEvents(event.target, getHandleBindings(args), options);
     var unbindWindow = bindEvents(window, getWindowBindings(args), options);
 
     unbindEventsRef.current = function unbindAll() {
@@ -6319,7 +6319,7 @@ function useMouseSensor$1(api) {
       hasMoved: false
     });
   }, [getPhase, setPhase]);
-  var startPendingDrag = useMemoOne.useCallback(function startPendingDrag(actions, point) {
+  var startPendingDrag = useMemoOne.useCallback(function startPendingDrag(actions, point, event) {
     !(getPhase().type === 'IDLE') ? process.env.NODE_ENV !== "production" ? invariant(false, 'Expected to move from IDLE to PENDING drag') : invariant(false) : void 0;
     var longPressTimerId = setTimeout(startDragging, timeForLongPress);
     setPhase({
@@ -6328,7 +6328,7 @@ function useMouseSensor$1(api) {
       actions: actions,
       longPressTimerId: longPressTimerId
     });
-    bindCapturingEvents();
+    bindCapturingEvents(event);
   }, [bindCapturingEvents, getPhase, setPhase, startDragging]);
   useIsomorphicLayoutEffect(function mount() {
     listenForCapture();

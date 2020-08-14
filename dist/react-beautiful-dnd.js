@@ -9130,7 +9130,7 @@
             y: clientY
           };
           unbindEventsRef.current();
-          startPendingDrag(actions, point);
+          startPendingDrag(actions, point, event);
         }
       };
     }, [api]);
@@ -9170,7 +9170,7 @@
         phase.actions.abort();
       }
     }, [stop]);
-    var bindCapturingEvents = useCallback(function bindCapturingEvents() {
+    var bindCapturingEvents = useCallback(function bindCapturingEvents(event) {
       var options = {
         capture: true,
         passive: false
@@ -9180,7 +9180,7 @@
         completed: stop,
         getPhase: getPhase
       };
-      var unbindTarget = bindEvents(window, getHandleBindings(args), options);
+      var unbindTarget = bindEvents(event.target, getHandleBindings(args), options);
       var unbindWindow = bindEvents(window, getWindowBindings(args), options);
 
       unbindEventsRef.current = function unbindAll() {
@@ -9198,7 +9198,7 @@
         hasMoved: false
       });
     }, [getPhase, setPhase]);
-    var startPendingDrag = useCallback(function startPendingDrag(actions, point) {
+    var startPendingDrag = useCallback(function startPendingDrag(actions, point, event) {
       !(getPhase().type === 'IDLE') ?  invariant(false, 'Expected to move from IDLE to PENDING drag')  : void 0;
       var longPressTimerId = setTimeout(startDragging, timeForLongPress);
       setPhase({
@@ -9207,7 +9207,7 @@
         actions: actions,
         longPressTimerId: longPressTimerId
       });
-      bindCapturingEvents();
+      bindCapturingEvents(event);
     }, [bindCapturingEvents, getPhase, setPhase, startDragging]);
     useIsomorphicLayoutEffect$1(function mount() {
       listenForCapture();
