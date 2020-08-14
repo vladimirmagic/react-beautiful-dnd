@@ -297,7 +297,7 @@ export default function useMouseSensor(api: SensorAPI) {
         unbindEventsRef.current();
 
         // eslint-disable-next-line no-use-before-define
-        startPendingDrag(actions, point);
+        startPendingDrag(actions, point, event);
       },
     }),
     // not including stop or startPendingDrag as it is not defined initially
@@ -350,7 +350,7 @@ export default function useMouseSensor(api: SensorAPI) {
   }, [stop]);
 
   const bindCapturingEvents = useCallback(
-    function bindCapturingEvents() {
+    function bindCapturingEvents(event: TouchEvent) {
       const options: EventOptions = { capture: true, passive: false };
       const args: GetBindingArgs = {
         cancel,
@@ -366,7 +366,7 @@ export default function useMouseSensor(api: SensorAPI) {
       // Old behaviour:
       // https://gist.github.com/parris/dda613e3ae78f14eb2dc9fa0f4bfce3d
       // https://stackoverflow.com/questions/33298828/touch-move-event-dont-fire-after-touch-start-target-is-removed
-      const unbindTarget = bindEvents(window, getHandleBindings(args), options);
+      const unbindTarget = bindEvents(event.target, getHandleBindings(args), options);
       const unbindWindow = bindEvents(window, getWindowBindings(args), options);
 
       unbindEventsRef.current = function unbindAll() {
@@ -397,7 +397,7 @@ export default function useMouseSensor(api: SensorAPI) {
   );
 
   const startPendingDrag = useCallback(
-    function startPendingDrag(actions: PreDragActions, point: Position) {
+    function startPendingDrag(actions: PreDragActions, point: Position, event: TouchEvent) {
       invariant(
         getPhase().type === 'IDLE',
         'Expected to move from IDLE to PENDING drag',
@@ -415,7 +415,7 @@ export default function useMouseSensor(api: SensorAPI) {
         longPressTimerId,
       });
 
-      bindCapturingEvents();
+      bindCapturingEvents(event);
     },
     [bindCapturingEvents, getPhase, setPhase, startDragging],
   );
