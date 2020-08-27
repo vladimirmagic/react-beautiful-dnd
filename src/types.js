@@ -1,5 +1,6 @@
 // @flow
 import type { BoxModel, Rect, Position } from 'css-box-model';
+import type { ScrollData } from './state/registry/registry-types';
 
 export type Id = string;
 export type DraggableId = Id;
@@ -314,6 +315,7 @@ export type DimensionMap = {|
 export type DroppablePublish = {|
   droppableId: DroppableId,
   scroll: Position,
+  scrollData: ScrollData
 |};
 export type Published = {|
   additions: DraggableDimension[],

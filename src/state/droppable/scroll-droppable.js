@@ -8,10 +8,12 @@ import type {
 } from '../../types';
 import { negate, subtract } from '../position';
 import getSubject from './util/get-subject';
+import type { ScrollData } from '../registry/registry-types';
 
 export default (
   droppable: DroppableDimension,
   newScroll: Position,
+  scrollData?: ScrollData
 ): DroppableDimension => {
   invariant(droppable.frame);
   const scrollable: Scrollable = droppable.frame;
@@ -34,9 +36,12 @@ export default (
         displacement: scrollDisplacement,
       },
       // TODO: rename 'softMax?'
-      max: scrollable.scroll.max,
+      max: scrollData && scrollData.maxScroll ? scrollData.maxScroll : scrollable.scroll.max,
     },
   };
+  if (scrollData && scrollData.scrollSize) {
+    frame.scrollSize = scrollData.scrollSize;
+  }
 
   const subject: DroppableSubject = getSubject({
     page: droppable.subject.page,

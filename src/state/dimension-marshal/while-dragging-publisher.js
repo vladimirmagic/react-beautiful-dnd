@@ -14,7 +14,7 @@ import type {
   DroppableEntry,
   Registry,
   DraggableEntry,
-  DraggableEntryMap,
+  DraggableEntryMap, ScrollData,
 } from '../registry/registry-types';
 import * as timings from '../../debug/timings';
 import { origin } from '../position';
@@ -86,9 +86,11 @@ export default function createPublisher({
           const entry: DroppableEntry = registry.droppable.getById(id);
 
           const scroll: Position = entry.callbacks.getScrollWhileDragging();
+          const scrollData: ScrollData = entry.callbacks.getScrollDataWhileDragging();
           return {
             droppableId: id,
             scroll,
+            scrollData
           };
         },
       );

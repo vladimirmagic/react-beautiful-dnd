@@ -10,7 +10,7 @@ import type {
   ScrollOptions,
   DroppableDescriptor,
   DroppableDimension,
-  TypeId,
+  TypeId, ScrollSize,
 } from '../../types';
 
 export type GetDraggableDimensionFn = (
@@ -43,10 +43,15 @@ export type RecollectDroppableOptions = {|
   withoutPlaceholder: boolean,
 |};
 
+export type ScrollData = {|
+  maxScroll: Position,
+  scrollSize: ScrollSize
+|};
 export type DroppableCallbacks = {|
   // a drag is starting
   getDimensionAndWatchScroll: GetDroppableDimensionFn,
   getScrollWhileDragging: () => Position,
+  getScrollDataWhileDragging: () => ScrollData,
   // scroll a droppable
   scroll: (change: Position) => void,
   // If the Droppable is listening for scroll events - it needs to stop!

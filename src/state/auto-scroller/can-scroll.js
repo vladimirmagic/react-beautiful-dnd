@@ -134,7 +134,7 @@ export const canScrollDroppable = (
 
   let max = frame.scroll.max;
 
-  const el = document.querySelector(`.droppable-list-${droppable.descriptor.id}`);
+  /*const el = document.querySelector(`.droppable-list-${droppable.descriptor.id}`);
   if (el) {
     max = getMaxScroll({
       scrollHeight: el.scrollHeight,
@@ -142,8 +142,8 @@ export const canScrollDroppable = (
       height: frame.frameClient.paddingBox.height,
       width: frame.frameClient.paddingBox.width,
     });
-  }
-  console.log('aaaaaaaa', max);
+  }*/
+  console.log('aaaaaaaa', max, droppable, JSON.stringify(droppable));
 
   return canPartiallyScroll({
     current: frame.scroll.current,

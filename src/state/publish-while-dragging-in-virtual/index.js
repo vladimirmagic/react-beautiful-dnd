@@ -50,6 +50,7 @@ export default ({
       const scrolled: DroppableDimension = scrollDroppable(
         existing,
         update.scroll,
+        update.scrollData
       );
       return scrolled;
     },

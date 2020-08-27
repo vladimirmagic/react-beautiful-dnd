@@ -1,6 +1,6 @@
 // @flow
 import { useRef } from 'react';
-import { type Position } from 'css-box-model';
+import { getBox, type Position } from 'css-box-model';
 import rafSchedule from 'raf-schd';
 import { useMemo, useCallback } from 'use-memo-one';
 import memoizeOne from 'memoize-one';
@@ -11,7 +11,7 @@ import { origin } from '../../state/position';
 import getScroll from './get-scroll';
 import type {
   DroppableEntry,
-  DroppableCallbacks,
+  DroppableCallbacks, ScrollData,
 } from '../../state/registry/registry-types';
 import getEnv, { type Env } from './get-env';
 import type {
@@ -22,7 +22,7 @@ import type {
   DroppableDescriptor,
   Direction,
   ScrollOptions,
-  DroppableMode,
+  DroppableMode, ScrollSize,
 } from '../../types';
 import getDimension from './get-dimension';
 import AppContext, { type AppContextValue } from '../context/app-context';
@@ -32,6 +32,8 @@ import useRequiredContext from '../use-required-context';
 import usePreviousRef from '../use-previous-ref';
 import useLayoutEffect from '../use-isomorphic-layout-effect';
 import useUniqueId from '../use-unique-id';
+import getMaxScroll from '../../state/get-max-scroll';
+import { BoxModel } from "css-box-model";
 
 type Props = {|
   droppableId: DroppableId,
@@ -186,6 +188,35 @@ export default function useDroppablePublisher(args: Props) {
     return getScroll(closest);
   }, []);
 
+  const getScrollDataWhileDragging = useCallback((): ScrollData => {
+    const dragging: ?WhileDragging = whileDraggingRef.current;
+    const closest: ?Element = getClosestScrollableFromDrag(dragging);
+    invariant(
+      dragging && closest,
+      'Can only recollect Droppable client for Droppables that have a scroll container',
+    );
+
+    const frameClient: BoxModel = getBox(closest);
+    const scrollSize: ScrollSize = {
+      scrollHeight: closest.scrollHeight,
+      scrollWidth: closest.scrollWidth,
+    }
+
+    // scrollHeight and scrollWidth are based on the padding box
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
+    const maxScroll: Position = getMaxScroll({
+      scrollHeight: scrollSize.scrollHeight,
+      scrollWidth: scrollSize.scrollWidth,
+      height: frameClient.paddingBox.height,
+      width: frameClient.paddingBox.width,
+    });
+
+    return {
+      maxScroll,
+      scrollSize
+    };
+  }, []);
+
   const dragStopped = useCallback(() => {
     const dragging: ?WhileDragging = whileDraggingRef.current;
     invariant(dragging, 'Cannot stop drag when no active drag');
@@ -226,8 +257,9 @@ export default function useDroppablePublisher(args: Props) {
       getScrollWhileDragging,
       dragStopped,
       scroll,
+      getScrollDataWhileDragging
     };
-  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll]);
+  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll, getScrollDataWhileDragging]);
 
   const entry: DroppableEntry = useMemo(
     () => ({
