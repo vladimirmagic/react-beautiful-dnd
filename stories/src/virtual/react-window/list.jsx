@@ -1,6 +1,6 @@
 // @flow
 import React, { useState } from 'react';
-import { FixedSizeList as List, areEqual } from 'react-window';
+import { VariableSizeList as List, areEqual } from 'react-window';
 import type { Quote } from '../../types';
 import {
   Droppable,
@@ -14,6 +14,7 @@ import {
 } from '../../../../src';
 import QuoteItem from '../../primatives/quote-item';
 import reorder from '../../reorder';
+import type { DroppableStateSnapshot } from '../../../../src';
 
 type Props = {|
   initial: Quote[],
@@ -27,6 +28,9 @@ type RowProps = {
 
 const Row = React.memo(({ data: quotes, index, style }: RowProps) => {
   const quote: Quote = quotes[index];
+  if (!quote) {
+    return null;
+  }
 
   return (
     <Draggable draggableId={quote.id} index={index} key={quote.id}>
@@ -63,8 +67,12 @@ function App(props: Props) {
     setQuotes(newQuotes);
   }
 
+  const getItemHeight = (index: number) => {
+    return Math.random() > 0.5 ? 150 : 100
+  }
+
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} >
       <Droppable
         droppableId="droppable"
         mode="virtual"
@@ -82,15 +90,16 @@ function App(props: Props) {
           />
         )}
       >
-        {(droppableProvided: DroppableProvided) => (
+        {(droppableProvided: DroppableProvided,  snapshot: DroppableStateSnapshot,) => (
           <List
             height={500}
-            itemCount={quotes.length}
-            itemSize={100}
+            itemCount={snapshot.isUsingPlaceholder ? quotes.length + 1 : quotes.length}
+            itemSize={getItemHeight}
             width={300}
             // you will want to use List.outerRef rather than List.innerRef as it has the correct height when the list is unpopulated
             outerRef={droppableProvided.innerRef}
             itemData={quotes}
+            estimatedItemSize={100}
           >
             {Row}
           </List>

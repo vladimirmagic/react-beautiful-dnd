@@ -1,6 +1,6 @@
 // @flow
 import React, { useReducer } from 'react';
-import { FixedSizeList as List, areEqual } from 'react-window';
+import { VariableSizeList as List, areEqual } from 'react-window';
 import styled from '@emotion/styled';
 import { Global, css } from '@emotion/core';
 import { colors } from '@atlaskit/theme';
@@ -84,6 +84,10 @@ const ColumnContainer = styled.div`
 const Column = React.memo(function Column(props: ColumnProps) {
   const { columnId, quotes } = props;
 
+  const getItemHeight = (index: number) => {
+    return Math.random() > 0.5 ? 160 : 110
+  }
+
   return (
     <ColumnContainer>
       <Title>{columnId}</Title>
@@ -113,12 +117,12 @@ const Column = React.memo(function Column(props: ColumnProps) {
           const itemCount: number = snapshot.isUsingPlaceholder
             ? quotes.length + 1
             : quotes.length;
-
           return (
             <List
+              className={'droppable-list-' + droppableProvided.droppableProps['data-rbd-droppable-id']}
               height={500}
               itemCount={itemCount}
-              itemSize={110}
+              itemSize={getItemHeight}
               width={300}
               outerRef={droppableProvided.innerRef}
               style={{
@@ -152,7 +156,7 @@ function getColumnKeys(quoteMap: QuoteMap): string[] {
 }
 
 function getInitialState() {
-  const itemCount: number = 10000;
+  const itemCount: number = 60;
   const quoteMap: QuoteMap = generateQuoteMap(itemCount);
   const columnKeys: string[] = getColumnKeys(quoteMap);
   return {
