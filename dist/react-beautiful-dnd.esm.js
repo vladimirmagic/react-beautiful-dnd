@@ -380,7 +380,30 @@ var getSubject = (function (_ref) {
   };
 });
 
-var scrollDroppable = (function (droppable, newScroll) {
+var updateSizes = function updateSizes(result, diff, isHeight) {
+  if (isHeight === void 0) {
+    isHeight = true;
+  }
+
+  if (!diff) return;
+  var boxKeys = ['marginBox', 'borderBox', 'paddingBox', 'contentBox'];
+  ['client', 'page'].forEach(function (key) {
+    boxKeys.forEach(function (boxKey) {
+      result[key][boxKey][isHeight ? 'bottom' : 'right'] += diff;
+      result[key][boxKey][isHeight ? 'height' : 'width'] += diff;
+      result[key][boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+    });
+  });
+  boxKeys.forEach(function (boxKey) {
+    result.subject.page[boxKey][isHeight ? 'bottom' : 'right'] += diff;
+    result.subject.page[boxKey][isHeight ? 'height' : 'width'] += diff;
+    result.subject.page[boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+  });
+  result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
+  result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+};
+
+var scrollDroppable = (function (droppable, newScroll, newClient) {
   !droppable.frame ? process.env.NODE_ENV !== "production" ? invariant(false) : invariant(false) : void 0;
   var scrollable = droppable.frame;
   var scrollDiff = subtract(newScroll, scrollable.scroll.initial);
@@ -409,6 +432,11 @@ var scrollDroppable = (function (droppable, newScroll) {
     frame: frame,
     subject: subject
   });
+
+  if (newClient) {
+    updateSizes(result, newClient.marginBox.height - droppable.client.marginBox.height);
+    updateSizes(result, newClient.marginBox.width - droppable.client.marginBox.width, false);
+  }
 
   return result;
 });
@@ -2431,7 +2459,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
   start();
   var withScrollChange = published.modified.map(function (update) {
     var existing = state.dimensions.droppables[update.droppableId];
-    var scrolled = scrollDroppable(existing, update.scroll);
+    var scrolled = scrollDroppable(existing, update.scroll, update.newClient);
     return scrolled;
   });
 
@@ -3922,9 +3950,11 @@ function createPublisher(_ref) {
       var updated = Object.keys(modified).map(function (id) {
         var entry = registry.droppable.getById(id);
         var scroll = entry.callbacks.getScrollWhileDragging();
+        var newClient = entry.callbacks.getNewClientWhileDragging();
         return {
           droppableId: id,
-          scroll: scroll
+          scroll: scroll,
+          newClient: newClient
         };
       });
       var result = {
@@ -7211,7 +7241,6 @@ var getClient = function getClient(targetRef, closestScrollable) {
   });
   return client;
 };
-
 var getDimension = (function (_ref) {
   var ref = _ref.ref,
       descriptor = _ref.descriptor,
@@ -7373,6 +7402,14 @@ function useDroppablePublisher(args) {
     !(dragging && closest) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Can only recollect Droppable client for Droppables that have a scroll container') : invariant(false) : void 0;
     return getScroll$1(closest);
   }, []);
+  var getNewClientWhileDragging = useCallback(function () {
+    var previous = previousRef.current;
+    var ref = previous.getDroppableRef();
+    !ref ? process.env.NODE_ENV !== "production" ? invariant(false, 'Cannot collect without a droppable ref') : invariant(false) : void 0;
+    var env = getEnv(ref);
+    var client = getClient(ref, env.closestScrollable);
+    return client;
+  }, []);
   var dragStopped = useCallback(function () {
     var dragging = whileDraggingRef.current;
     !dragging ? process.env.NODE_ENV !== "production" ? invariant(false, 'Cannot stop drag when no active drag') : invariant(false) : void 0;
@@ -7400,9 +7437,10 @@ function useDroppablePublisher(args) {
       getDimensionAndWatchScroll: getDimensionAndWatchScroll,
       getScrollWhileDragging: getScrollWhileDragging,
       dragStopped: dragStopped,
-      scroll: scroll
+      scroll: scroll,
+      getNewClientWhileDragging: getNewClientWhileDragging
     };
-  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll]);
+  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll, getNewClientWhileDragging]);
   var entry = useMemo(function () {
     return {
       uniqueId: uniqueId,

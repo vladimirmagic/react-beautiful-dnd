@@ -2,19 +2,25 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
 var React = require('react');
-var React__default = _interopDefault(React);
-var _inheritsLoose = _interopDefault(require('@babel/runtime/helpers/inheritsLoose'));
-var _extends = _interopDefault(require('@babel/runtime/helpers/extends'));
+var _inheritsLoose = require('@babel/runtime/helpers/inheritsLoose');
+var _extends = require('@babel/runtime/helpers/extends');
 var redux = require('redux');
 var reactRedux = require('react-redux');
 var useMemoOne = require('use-memo-one');
 var cssBoxModel = require('css-box-model');
-var memoizeOne = _interopDefault(require('memoize-one'));
-var rafSchd = _interopDefault(require('raf-schd'));
-var ReactDOM = _interopDefault(require('react-dom'));
+var memoizeOne = require('memoize-one');
+var rafSchd = require('raf-schd');
+var ReactDOM = require('react-dom');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+var _inheritsLoose__default = /*#__PURE__*/_interopDefaultLegacy(_inheritsLoose);
+var _extends__default = /*#__PURE__*/_interopDefaultLegacy(_extends);
+var memoizeOne__default = /*#__PURE__*/_interopDefaultLegacy(memoizeOne);
+var rafSchd__default = /*#__PURE__*/_interopDefaultLegacy(rafSchd);
+var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
 var isProduction = process.env.NODE_ENV === 'production';
 var spacesAndTabs = /[ \t]{2,}/g;
@@ -51,7 +57,7 @@ var error = log.bind(null, 'error');
 function noop() {}
 
 function getOptions(shared, fromBinding) {
-  return _extends({}, shared, fromBinding);
+  return _extends__default['default']({}, shared, fromBinding);
 }
 
 function bindEvents(el, bindings, sharedOptions) {
@@ -92,7 +98,7 @@ function invariant(condition, message) {
 }
 
 var ErrorBoundary = function (_React$Component) {
-  _inheritsLoose(ErrorBoundary, _React$Component);
+  _inheritsLoose__default['default'](ErrorBoundary, _React$Component);
 
   function ErrorBoundary() {
     var _this;
@@ -170,7 +176,7 @@ var ErrorBoundary = function (_React$Component) {
   };
 
   return ErrorBoundary;
-}(React__default.Component);
+}(React__default['default'].Component);
 
 var dragHandleUsageInstructions = "\n  Press space bar to start a drag.\n  When dragging you can use the arrow keys to move the item around and escape to cancel.\n  Some screen readers may require you to be in focus mode or to use your pass through key\n";
 
@@ -358,7 +364,7 @@ var increase = function increase(target, axis, withPlaceholder) {
   if (withPlaceholder && withPlaceholder.increasedBy) {
     var _extends2;
 
-    return _extends({}, target, (_extends2 = {}, _extends2[axis.end] = target[axis.end] + withPlaceholder.increasedBy[axis.line], _extends2));
+    return _extends__default['default']({}, target, (_extends2 = {}, _extends2[axis.end] = target[axis.end] + withPlaceholder.increasedBy[axis.line], _extends2));
   }
 
   return target;
@@ -387,13 +393,36 @@ var getSubject = (function (_ref) {
   };
 });
 
-var scrollDroppable = (function (droppable, newScroll) {
+var updateSizes = function updateSizes(result, diff, isHeight) {
+  if (isHeight === void 0) {
+    isHeight = true;
+  }
+
+  if (!diff) return;
+  var boxKeys = ['marginBox', 'borderBox', 'paddingBox', 'contentBox'];
+  ['client', 'page'].forEach(function (key) {
+    boxKeys.forEach(function (boxKey) {
+      result[key][boxKey][isHeight ? 'bottom' : 'right'] += diff;
+      result[key][boxKey][isHeight ? 'height' : 'width'] += diff;
+      result[key][boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+    });
+  });
+  boxKeys.forEach(function (boxKey) {
+    result.subject.page[boxKey][isHeight ? 'bottom' : 'right'] += diff;
+    result.subject.page[boxKey][isHeight ? 'height' : 'width'] += diff;
+    result.subject.page[boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+  });
+  result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
+  result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+};
+
+var scrollDroppable = (function (droppable, newScroll, newClient) {
   !droppable.frame ? process.env.NODE_ENV !== "production" ? invariant(false) : invariant(false) : void 0;
   var scrollable = droppable.frame;
   var scrollDiff = subtract(newScroll, scrollable.scroll.initial);
   var scrollDisplacement = negate(scrollDiff);
 
-  var frame = _extends({}, scrollable, {
+  var frame = _extends__default['default']({}, scrollable, {
     scroll: {
       initial: scrollable.scroll.initial,
       current: newScroll,
@@ -412,10 +441,15 @@ var scrollDroppable = (function (droppable, newScroll) {
     frame: frame
   });
 
-  var result = _extends({}, droppable, {
+  var result = _extends__default['default']({}, droppable, {
     frame: frame,
     subject: subject
   });
+
+  if (newClient) {
+    updateSizes(result, newClient.marginBox.height - droppable.client.marginBox.height);
+    updateSizes(result, newClient.marginBox.width - droppable.client.marginBox.width, false);
+  }
 
   return result;
 });
@@ -466,26 +500,26 @@ function toArray(list) {
   return Array.prototype.slice.call(list);
 }
 
-var toDroppableMap = memoizeOne(function (droppables) {
+var toDroppableMap = memoizeOne__default['default'](function (droppables) {
   return droppables.reduce(function (previous, current) {
     previous[current.descriptor.id] = current;
     return previous;
   }, {});
 });
-var toDraggableMap = memoizeOne(function (draggables) {
+var toDraggableMap = memoizeOne__default['default'](function (draggables) {
   return draggables.reduce(function (previous, current) {
     previous[current.descriptor.id] = current;
     return previous;
   }, {});
 });
-var toDroppableList = memoizeOne(function (droppables) {
+var toDroppableList = memoizeOne__default['default'](function (droppables) {
   return values(droppables);
 });
-var toDraggableList = memoizeOne(function (draggables) {
+var toDraggableList = memoizeOne__default['default'](function (draggables) {
   return values(draggables);
 });
 
-var getDraggablesInsideDroppable = memoizeOne(function (droppableId, draggables) {
+var getDraggablesInsideDroppable = memoizeOne__default['default'](function (droppableId, draggables) {
   var result = toDraggableList(draggables).filter(function (draggable) {
     return droppableId === draggable.descriptor.droppableId;
   }).sort(function (a, b) {
@@ -509,7 +543,7 @@ function tryGetCombine(impact) {
   return null;
 }
 
-var removeDraggableFromList = memoizeOne(function (remove, list) {
+var removeDraggableFromList = memoizeOne__default['default'](function (remove, list) {
   return list.filter(function (item) {
     return item.descriptor.id !== remove.descriptor.id;
   });
@@ -540,7 +574,7 @@ var moveToNextCombine = (function (_ref) {
         droppableId: destination.descriptor.id
       }
     };
-    return _extends({}, previousImpact, {
+    return _extends__default['default']({}, previousImpact, {
       at: at
     });
   }
@@ -707,17 +741,17 @@ var isVisible = function isVisible(_ref) {
 };
 
 var isPartiallyVisible = function isPartiallyVisible(args) {
-  return isVisible(_extends({}, args, {
+  return isVisible(_extends__default['default']({}, args, {
     isVisibleThroughFrameFn: isPartiallyVisibleThroughFrame
   }));
 };
 var isTotallyVisible = function isTotallyVisible(args) {
-  return isVisible(_extends({}, args, {
+  return isVisible(_extends__default['default']({}, args, {
     isVisibleThroughFrameFn: isTotallyVisibleThroughFrame
   }));
 };
 var isTotallyVisibleOnAxis = function isTotallyVisibleOnAxis(args) {
-  return isVisible(_extends({}, args, {
+  return isVisible(_extends__default['default']({}, args, {
     isVisibleThroughFrameFn: isTotallyVisibleThroughFrameOnAxis(args.destination.axis)
   }));
 };
@@ -1256,7 +1290,7 @@ var speculativelyIncrease = (function (_ref) {
     invisible[id] = true;
   });
 
-  var newImpact = _extends({}, impact, {
+  var newImpact = _extends__default['default']({}, impact, {
     displaced: {
       all: last.all,
       invisible: invisible,
@@ -1509,7 +1543,7 @@ var getClosestDraggable = (function (_ref) {
   return sorted[0] || null;
 });
 
-var getDisplacedBy = memoizeOne(function getDisplacedBy(axis, displaceBy) {
+var getDisplacedBy = memoizeOne__default['default'](function getDisplacedBy(axis, displaceBy) {
   var displacement = displaceBy[axis.line];
   return {
     value: displacement,
@@ -1540,8 +1574,8 @@ var getRequiredGrowthForPlaceholder = function getRequiredGrowthForPlaceholder(d
 };
 
 var withMaxScroll = function withMaxScroll(frame, max) {
-  return _extends({}, frame, {
-    scroll: _extends({}, frame.scroll, {
+  return _extends__default['default']({}, frame, {
+    scroll: _extends__default['default']({}, frame.scroll, {
       max: max
     })
   });
@@ -1567,7 +1601,7 @@ var addPlaceholder = function addPlaceholder(droppable, draggable, draggables) {
       frame: droppable.frame
     });
 
-    return _extends({}, droppable, {
+    return _extends__default['default']({}, droppable, {
       subject: _subject
     });
   }
@@ -1580,7 +1614,7 @@ var addPlaceholder = function addPlaceholder(droppable, draggable, draggables) {
     axis: droppable.axis,
     frame: newFrame
   });
-  return _extends({}, droppable, {
+  return _extends__default['default']({}, droppable, {
     subject: subject,
     frame: newFrame
   });
@@ -1598,7 +1632,7 @@ var removePlaceholder = function removePlaceholder(droppable) {
       withPlaceholder: null
     });
 
-    return _extends({}, droppable, {
+    return _extends__default['default']({}, droppable, {
       subject: _subject2
     });
   }
@@ -1612,7 +1646,7 @@ var removePlaceholder = function removePlaceholder(droppable) {
     frame: newFrame,
     withPlaceholder: null
   });
-  return _extends({}, droppable, {
+  return _extends__default['default']({}, droppable, {
     subject: subject,
     frame: newFrame
   });
@@ -2105,7 +2139,7 @@ var getDragImpact = (function (_ref) {
 var patchDroppableMap = (function (droppables, updated) {
   var _extends2;
 
-  return _extends({}, droppables, (_extends2 = {}, _extends2[updated.descriptor.id] = updated, _extends2));
+  return _extends__default['default']({}, droppables, (_extends2 = {}, _extends2[updated.descriptor.id] = updated, _extends2));
 });
 
 var clearUnusedPlaceholder = function clearUnusedPlaceholder(_ref) {
@@ -2191,7 +2225,7 @@ var update = (function (_ref) {
   };
 
   if (state.phase === 'COLLECTING') {
-    return _extends({
+    return _extends__default['default']({
       phase: 'COLLECTING'
     }, state, {
       dimensions: dimensions,
@@ -2218,7 +2252,7 @@ var update = (function (_ref) {
     droppables: dimensions.droppables
   });
 
-  var result = _extends({}, state, {
+  var result = _extends__default['default']({}, state, {
     current: current,
     dimensions: {
       draggables: dimensions.draggables,
@@ -2255,7 +2289,7 @@ var recompute = (function (_ref) {
     forceShouldAnimate: forceShouldAnimate,
     last: last
   });
-  return _extends({}, impact, {
+  return _extends__default['default']({}, impact, {
     displaced: displaced
   });
 });
@@ -2395,8 +2429,8 @@ var offsetDraggable = (function (_ref) {
   var client = cssBoxModel.offset(draggable.client, offset);
   var page = cssBoxModel.withScroll(client, initialWindowScroll);
 
-  var moved = _extends({}, draggable, {
-    placeholder: _extends({}, draggable.placeholder, {
+  var moved = _extends__default['default']({}, draggable, {
+    placeholder: _extends__default['default']({}, draggable.placeholder, {
       client: client
     }),
     client: client,
@@ -2438,11 +2472,11 @@ var publishWhileDraggingInVirtual = (function (_ref) {
   start();
   var withScrollChange = published.modified.map(function (update) {
     var existing = state.dimensions.droppables[update.droppableId];
-    var scrolled = scrollDroppable(existing, update.scroll);
+    var scrolled = scrollDroppable(existing, update.scroll, update.newClient);
     return scrolled;
   });
 
-  var droppables = _extends({}, state.dimensions.droppables, toDroppableMap(withScrollChange));
+  var droppables = _extends__default['default']({}, state.dimensions.droppables, toDroppableMap(withScrollChange));
 
   var updatedAdditions = toDraggableMap(adjustAdditionsForScrollChanges({
     additions: published.additions,
@@ -2450,7 +2484,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
     viewport: state.viewport
   }));
 
-  var draggables = _extends({}, state.dimensions.draggables, updatedAdditions);
+  var draggables = _extends__default['default']({}, state.dimensions.draggables, updatedAdditions);
 
   published.removals.forEach(function (id) {
     delete draggables[id];
@@ -2485,7 +2519,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
   });
   finish();
 
-  var draggingState = _extends({
+  var draggingState = _extends__default['default']({
     phase: 'DRAGGING'
   }, state, {
     phase: 'DRAGGING',
@@ -2500,7 +2534,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
     return draggingState;
   }
 
-  var dropPending = _extends({
+  var dropPending = _extends__default['default']({
     phase: 'DROP_PENDING'
   }, draggingState, {
     phase: 'DROP_PENDING',
@@ -2533,7 +2567,7 @@ var postDroppableChange = function postDroppableChange(state, updated, isEnabled
 
 function removeScrollJumpRequest(state) {
   if (state.isDragging && state.movementMode === 'SNAP') {
-    return _extends({
+    return _extends__default['default']({
       phase: 'DRAGGING'
     }, state, {
       scrollJumpRequest: null
@@ -2554,7 +2588,7 @@ var reducer = (function (state, action) {
   }
 
   if (action.type === 'FLUSH') {
-    return _extends({}, idle, {
+    return _extends__default['default']({}, idle, {
       shouldFlush: true
     });
   }
@@ -2621,7 +2655,7 @@ var reducer = (function (state, action) {
 
     !(state.phase === 'DRAGGING') ? process.env.NODE_ENV !== "production" ? invariant(false, "Collection cannot start from phase " + state.phase) : invariant(false) : void 0;
 
-    var _result = _extends({
+    var _result = _extends__default['default']({
       phase: 'COLLECTING'
     }, state, {
       phase: 'COLLECTING'
@@ -2693,7 +2727,7 @@ var reducer = (function (state, action) {
     !_target ? process.env.NODE_ENV !== "production" ? invariant(false, "Cannot find Droppable[id: " + _id + "] to toggle its enabled state") : invariant(false) : void 0;
     !(_target.isEnabled !== isEnabled) ? process.env.NODE_ENV !== "production" ? invariant(false, "Trying to set droppable isEnabled to " + String(isEnabled) + "\n      but it is already " + String(_target.isEnabled)) : invariant(false) : void 0;
 
-    var updated = _extends({}, _target, {
+    var updated = _extends__default['default']({}, _target, {
       isEnabled: isEnabled
     });
 
@@ -2713,7 +2747,7 @@ var reducer = (function (state, action) {
     !_target2 ? process.env.NODE_ENV !== "production" ? invariant(false, "Cannot find Droppable[id: " + _id2 + "] to toggle its isCombineEnabled state") : invariant(false) : void 0;
     !(_target2.isCombineEnabled !== isCombineEnabled) ? process.env.NODE_ENV !== "production" ? invariant(false, "Trying to set droppable isCombineEnabled to " + String(isCombineEnabled) + "\n      but it is already " + String(_target2.isCombineEnabled)) : invariant(false) : void 0;
 
-    var _updated = _extends({}, _target2, {
+    var _updated = _extends__default['default']({}, _target2, {
       isCombineEnabled: isCombineEnabled
     });
 
@@ -2759,13 +2793,13 @@ var reducer = (function (state, action) {
       return state;
     }
 
-    var withMaxScroll = _extends({}, state.viewport, {
-      scroll: _extends({}, state.viewport.scroll, {
+    var withMaxScroll = _extends__default['default']({}, state.viewport, {
+      scroll: _extends__default['default']({}, state.viewport.scroll, {
         max: maxScroll
       })
     });
 
-    return _extends({
+    return _extends__default['default']({
       phase: 'DRAGGING'
     }, state, {
       viewport: withMaxScroll
@@ -2800,7 +2834,7 @@ var reducer = (function (state, action) {
     var reason = action.payload.reason;
     !(state.phase === 'COLLECTING') ? process.env.NODE_ENV !== "production" ? invariant(false, 'Can only move into the DROP_PENDING phase from the COLLECTING phase') : invariant(false) : void 0;
 
-    var newState = _extends({
+    var newState = _extends__default['default']({
       phase: 'DROP_PENDING'
     }, state, {
       phase: 'DROP_PENDING',
@@ -3208,7 +3242,7 @@ var getDropImpact = (function (_ref) {
     };
   }
 
-  var withoutMovement = _extends({}, lastImpact, {
+  var withoutMovement = _extends__default['default']({}, lastImpact, {
     displaced: emptyGroups
   });
 
@@ -3344,7 +3378,7 @@ function getScrollListener(_ref) {
     onWindowScroll(getWindowScroll());
   }
 
-  var scheduled = rafSchd(updateScroll);
+  var scheduled = rafSchd__default['default'](updateScroll);
   var binding = getWindowScrollBinding(scheduled);
   var unbind = noop;
 
@@ -3612,7 +3646,7 @@ var getPublisher = (function (getResponders, announce) {
       return;
     }
 
-    var data = _extends({}, getDragStart(critical, dragging.mode), {
+    var data = _extends__default['default']({}, getDragStart(critical, dragging.mode), {
       combine: combine,
       destination: location
     });
@@ -3642,7 +3676,7 @@ var getPublisher = (function (getResponders, announce) {
       return;
     }
 
-    var result = _extends({}, getDragStart(dragging.lastCritical, dragging.mode), {
+    var result = _extends__default['default']({}, getDragStart(dragging.lastCritical, dragging.mode), {
       combine: null,
       destination: null,
       reason: 'CANCEL'
@@ -3929,9 +3963,11 @@ function createPublisher(_ref) {
       var updated = Object.keys(modified).map(function (id) {
         var entry = registry.droppable.getById(id);
         var scroll = entry.callbacks.getScrollWhileDragging();
+        var newClient = entry.callbacks.getNewClientWhileDragging();
         return {
           droppableId: id,
-          scroll: scroll
+          scroll: scroll,
+          newClient: newClient
         };
       });
       var result = {
@@ -4236,7 +4272,7 @@ var scrollWindow = (function (change) {
   window.scrollBy(change.x, change.y);
 });
 
-var getScrollableDroppables = memoizeOne(function (droppables) {
+var getScrollableDroppables = memoizeOne__default['default'](function (droppables) {
   return toDroppableList(droppables).filter(function (droppable) {
     if (!droppable.isEnabled) {
       return false;
@@ -4713,8 +4749,8 @@ var scroll$1 = (function (_ref) {
 var createFluidScroller = (function (_ref) {
   var scrollWindow = _ref.scrollWindow,
       scrollDroppable = _ref.scrollDroppable;
-  var scheduleWindowScroll = rafSchd(scrollWindow);
-  var scheduleDroppableScroll = rafSchd(scrollDroppable);
+  var scheduleWindowScroll = rafSchd__default['default'](scrollWindow);
+  var scheduleDroppableScroll = rafSchd__default['default'](scrollDroppable);
   var dragging = null;
 
   var tryScroll = function tryScroll(state) {
@@ -5018,7 +5054,7 @@ function useStyleMarshal(contextId, nonce) {
   }, [contextId]);
   var alwaysRef = React.useRef(null);
   var dynamicRef = React.useRef(null);
-  var setDynamicStyle = useMemoOne.useCallback(memoizeOne(function (proposed) {
+  var setDynamicStyle = useMemoOne.useCallback(memoizeOne__default['default'](function (proposed) {
     var el = dynamicRef.current;
     !el ? process.env.NODE_ENV !== "production" ? invariant(false, 'Cannot set dynamic style element if it is not set') : invariant(false) : void 0;
     el.textContent = proposed;
@@ -5353,7 +5389,7 @@ function useRegistry() {
   return registry;
 }
 
-var StoreContext = React__default.createContext(null);
+var StoreContext = React__default['default'].createContext(null);
 
 var getBodyElement = (function () {
   var body = document.body;
@@ -5388,7 +5424,7 @@ function useAnnouncer(contextId) {
     el.setAttribute('aria-live', 'assertive');
     el.setAttribute('aria-atomic', 'true');
 
-    _extends(el.style, visuallyHidden);
+    _extends__default['default'](el.style, visuallyHidden);
 
     getBodyElement().appendChild(el);
     return function cleanup() {
@@ -5469,7 +5505,7 @@ function useHiddenTextElement(_ref2) {
   return id;
 }
 
-var AppContext = React__default.createContext(null);
+var AppContext = React__default['default'].createContext(null);
 
 var peerDependencies = {
 	react: "^16.8.5",
@@ -5561,7 +5597,7 @@ function useDevSetupWarning(fn, inputs) {
 
 function useStartupValidation() {
   useDevSetupWarning(function () {
-    checkReactVersion(peerDependencies.react, React__default.version);
+    checkReactVersion(peerDependencies.react, React__default['default'].version);
     checkDoctype(document);
   }, []);
 }
@@ -6661,7 +6697,7 @@ function tryStart(_ref3) {
       }));
     }
 
-    return _extends({
+    return _extends__default['default']({
       isActive: function isActive() {
         return _isActive({
           expected: 'DRAGGING',
@@ -6681,7 +6717,7 @@ function tryStart(_ref3) {
   }
 
   function fluidLift(clientSelection) {
-    var move$1 = rafSchd(function (client) {
+    var move$1 = rafSchd__default['default'](function (client) {
       tryDispatchWhenDragging(function () {
         return move({
           client: client
@@ -6701,7 +6737,7 @@ function tryStart(_ref3) {
         move: move$1
       }
     });
-    return _extends({}, api, {
+    return _extends__default['default']({}, api, {
       move: move$1
     });
   }
@@ -6895,7 +6931,7 @@ function App(props) {
     return createDimensionMarshal(registry, marshalCallbacks);
   }, [registry, marshalCallbacks]);
   var autoScroller = useMemoOne.useMemo(function () {
-    return createAutoScroller(_extends({
+    return createAutoScroller(_extends__default['default']({
       scrollWindow: scrollWindow,
       scrollDroppable: dimensionMarshal.scrollDroppable
     }, redux.bindActionCreators({
@@ -6967,9 +7003,9 @@ function App(props) {
   React.useEffect(function () {
     return tryResetStore;
   }, [tryResetStore]);
-  return React__default.createElement(AppContext.Provider, {
+  return React__default['default'].createElement(AppContext.Provider, {
     value: appContext
-  }, React__default.createElement(reactRedux.Provider, {
+  }, React__default['default'].createElement(reactRedux.Provider, {
     context: StoreContext,
     store: store
   }, props.children));
@@ -6992,8 +7028,8 @@ function resetServerContext() {
 function DragDropContext(props) {
   var contextId = useInstanceCount();
   var dragHandleUsageInstructions = props.dragHandleUsageInstructions || preset.dragHandleUsageInstructions;
-  return React__default.createElement(ErrorBoundary, null, function (setCallbacks) {
-    return React__default.createElement(App, {
+  return React__default['default'].createElement(ErrorBoundary, null, function (setCallbacks) {
+    return React__default['default'].createElement(App, {
       nonce: props.nonce,
       contextId: contextId,
       setCallbacks: setCallbacks,
@@ -7218,7 +7254,6 @@ var getClient = function getClient(targetRef, closestScrollable) {
   });
   return client;
 };
-
 var getDimension = (function (_ref) {
   var ref = _ref.ref,
       descriptor = _ref.descriptor,
@@ -7300,7 +7335,7 @@ function useDroppablePublisher(args) {
   }, [args.droppableId, args.mode, args.type]);
   var publishedDescriptorRef = React.useRef(descriptor);
   var memoizedUpdateScroll = useMemoOne.useMemo(function () {
-    return memoizeOne(function (x, y) {
+    return memoizeOne__default['default'](function (x, y) {
       !whileDraggingRef.current ? process.env.NODE_ENV !== "production" ? invariant(false, 'Can only update scroll when dragging') : invariant(false) : void 0;
       var scroll = {
         x: x,
@@ -7323,7 +7358,7 @@ function useDroppablePublisher(args) {
     memoizedUpdateScroll(scroll.x, scroll.y);
   }, [getClosestScroll, memoizedUpdateScroll]);
   var scheduleScrollUpdate = useMemoOne.useMemo(function () {
-    return rafSchd(updateScroll);
+    return rafSchd__default['default'](updateScroll);
   }, [updateScroll]);
   var onClosestScroll = useMemoOne.useCallback(function () {
     var dragging = whileDraggingRef.current;
@@ -7380,6 +7415,14 @@ function useDroppablePublisher(args) {
     !(dragging && closest) ? process.env.NODE_ENV !== "production" ? invariant(false, 'Can only recollect Droppable client for Droppables that have a scroll container') : invariant(false) : void 0;
     return getScroll$1(closest);
   }, []);
+  var getNewClientWhileDragging = useMemoOne.useCallback(function () {
+    var previous = previousRef.current;
+    var ref = previous.getDroppableRef();
+    !ref ? process.env.NODE_ENV !== "production" ? invariant(false, 'Cannot collect without a droppable ref') : invariant(false) : void 0;
+    var env = getEnv(ref);
+    var client = getClient(ref, env.closestScrollable);
+    return client;
+  }, []);
   var dragStopped = useMemoOne.useCallback(function () {
     var dragging = whileDraggingRef.current;
     !dragging ? process.env.NODE_ENV !== "production" ? invariant(false, 'Cannot stop drag when no active drag') : invariant(false) : void 0;
@@ -7407,9 +7450,10 @@ function useDroppablePublisher(args) {
       getDimensionAndWatchScroll: getDimensionAndWatchScroll,
       getScrollWhileDragging: getScrollWhileDragging,
       dragStopped: dragStopped,
-      scroll: scroll
+      scroll: scroll,
+      getNewClientWhileDragging: getNewClientWhileDragging
     };
-  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll]);
+  }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll, getNewClientWhileDragging]);
   var entry = useMemoOne.useMemo(function () {
     return {
       uniqueId: uniqueId,
@@ -7554,7 +7598,7 @@ function Placeholder(props) {
     animate: props.animate,
     placeholder: props.placeholder
   });
-  return React__default.createElement(props.placeholder.tagName, {
+  return React__default['default'].createElement(props.placeholder.tagName, {
     style: style,
     'data-rbd-placeholder-context-id': contextId,
     onTransitionEnd: onSizeChangeEnd,
@@ -7562,9 +7606,9 @@ function Placeholder(props) {
   });
 }
 
-var Placeholder$1 = React__default.memo(Placeholder);
+var Placeholder$1 = React__default['default'].memo(Placeholder);
 
-var DroppableContext = React__default.createContext(null);
+var DroppableContext = React__default['default'].createContext(null);
 
 function checkIsValidInnerRef(el) {
   !(el && isHtmlElement(el)) ? process.env.NODE_ENV !== "production" ? invariant(false, "\n    provided.innerRef has not been provided with a HTMLElement.\n\n    You can find a guide on using the innerRef callback functions at:\n    https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/using-inner-ref.md\n  ") : invariant(false) : void 0;
@@ -7631,7 +7675,7 @@ function useValidation(args) {
 }
 
 var AnimateInOut = function (_React$PureComponent) {
-  _inheritsLoose(AnimateInOut, _React$PureComponent);
+  _inheritsLoose__default['default'](AnimateInOut, _React$PureComponent);
 
   function AnimateInOut() {
     var _this;
@@ -7708,7 +7752,7 @@ var AnimateInOut = function (_React$PureComponent) {
   };
 
   return AnimateInOut;
-}(React__default.PureComponent);
+}(React__default['default'].PureComponent);
 
 var zIndexOptions = {
   dragging: 5000,
@@ -8024,13 +8068,13 @@ var getCombineWithFromImpact = function getCombineWithFromImpact(impact) {
 };
 
 function getDraggableSelector() {
-  var memoizedOffset = memoizeOne(function (x, y) {
+  var memoizedOffset = memoizeOne__default['default'](function (x, y) {
     return {
       x: x,
       y: y
     };
   });
-  var getMemoizedSnapshot = memoizeOne(function (mode, isClone, draggingOver, combineWith, dropping) {
+  var getMemoizedSnapshot = memoizeOne__default['default'](function (mode, isClone, draggingOver, combineWith, dropping) {
     return {
       isDragging: true,
       isClone: isClone,
@@ -8042,7 +8086,7 @@ function getDraggableSelector() {
       combineTargetFor: null
     };
   });
-  var getMemoizedProps = memoizeOne(function (offset, mode, dimension, isClone, draggingOver, combineWith, forceShouldAnimate) {
+  var getMemoizedProps = memoizeOne__default['default'](function (offset, mode, dimension, isClone, draggingOver, combineWith, forceShouldAnimate) {
     return {
       mapped: {
         type: 'DRAGGING',
@@ -8141,14 +8185,14 @@ var atRest = {
 };
 
 function getSecondarySelector() {
-  var memoizedOffset = memoizeOne(function (x, y) {
+  var memoizedOffset = memoizeOne__default['default'](function (x, y) {
     return {
       x: x,
       y: y
     };
   });
-  var getMemoizedSnapshot = memoizeOne(getSecondarySnapshot);
-  var getMemoizedProps = memoizeOne(function (offset, combineTargetFor, shouldAnimateDisplacement) {
+  var getMemoizedSnapshot = memoizeOne__default['default'](getSecondarySnapshot);
+  var getMemoizedProps = memoizeOne__default['default'](function (offset, combineTargetFor, shouldAnimateDisplacement) {
     if (combineTargetFor === void 0) {
       combineTargetFor = null;
     }
@@ -8251,13 +8295,13 @@ function PrivateDraggable(props) {
     return null;
   }
 
-  return React__default.createElement(ConnectedDraggable, props);
+  return React__default['default'].createElement(ConnectedDraggable, props);
 }
 function PublicDraggable(props) {
   var isEnabled = typeof props.isDragDisabled === 'boolean' ? !props.isDragDisabled : true;
   var canDragInteractiveElements = Boolean(props.disableInteractiveElementBlocking);
   var shouldRespectForcePress = Boolean(props.shouldRespectForcePress);
-  return React__default.createElement(PrivateDraggable, _extends({}, props, {
+  return React__default['default'].createElement(PrivateDraggable, _extends__default['default']({}, props, {
     isClone: false,
     isEnabled: isEnabled,
     canDragInteractiveElements: canDragInteractiveElements,
@@ -8318,14 +8362,14 @@ function Droppable(props) {
     ignoreContainerClipping: ignoreContainerClipping,
     getDroppableRef: getDroppableRef
   });
-  var placeholder = React__default.createElement(AnimateInOut, {
+  var placeholder = React__default['default'].createElement(AnimateInOut, {
     on: props.placeholder,
     shouldAnimate: props.shouldAnimatePlaceholder
   }, function (_ref) {
     var onClose = _ref.onClose,
         data = _ref.data,
         animate = _ref.animate;
-    return React__default.createElement(Placeholder$1, {
+    return React__default['default'].createElement(Placeholder$1, {
       placeholder: data,
       onClose: onClose,
       innerRef: setPlaceholderRef,
@@ -8360,7 +8404,7 @@ function Droppable(props) {
 
     var dragging = useClone.dragging,
         render = useClone.render;
-    var node = React__default.createElement(PrivateDraggable, {
+    var node = React__default['default'].createElement(PrivateDraggable, {
       draggableId: dragging.draggableId,
       index: dragging.source.index,
       isClone: true,
@@ -8370,10 +8414,10 @@ function Droppable(props) {
     }, function (draggableProvided, draggableSnapshot) {
       return render(draggableProvided, draggableSnapshot, dragging);
     });
-    return ReactDOM.createPortal(node, getContainerForClone());
+    return ReactDOM__default['default'].createPortal(node, getContainerForClone());
   }
 
-  return React__default.createElement(DroppableContext.Provider, {
+  return React__default['default'].createElement(DroppableContext.Provider, {
     value: droppableContext
   }, children(provided, snapshot), getClone());
 }
@@ -8399,11 +8443,11 @@ var makeMapStateToProps$1 = function makeMapStateToProps() {
     useClone: null
   };
 
-  var idleWithoutAnimation = _extends({}, idleWithAnimation, {
+  var idleWithoutAnimation = _extends__default['default']({}, idleWithAnimation, {
     shouldAnimatePlaceholder: false
   });
 
-  var getDraggableRubric = memoizeOne(function (descriptor) {
+  var getDraggableRubric = memoizeOne__default['default'](function (descriptor) {
     return {
       draggableId: descriptor.id,
       type: descriptor.type,
@@ -8413,7 +8457,7 @@ var makeMapStateToProps$1 = function makeMapStateToProps() {
       }
     };
   });
-  var getMapProps = memoizeOne(function (id, isEnabled, isDraggingOverForConsumer, isDraggingOverForImpact, dragging, renderClone) {
+  var getMapProps = memoizeOne__default['default'](function (id, isEnabled, isDraggingOverForConsumer, isDraggingOverForImpact, dragging, renderClone) {
     var draggableId = dragging.descriptor.id;
     var isHome = dragging.descriptor.droppableId === id;
 

@@ -4,8 +4,10 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ReactBeautifulDnd = {}, global.React, global.ReactDOM));
 }(this, (function (exports, React, ReactDOM) { 'use strict';
 
-  var React__default = 'default' in React ? React['default'] : React;
-  var ReactDOM__default = 'default' in ReactDOM ? ReactDOM['default'] : ReactDOM;
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+  var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
   function _inheritsLoose(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
@@ -177,7 +179,7 @@
     };
 
     return ErrorBoundary;
-  }(React__default.Component);
+  }(React__default['default'].Component);
 
   var dragHandleUsageInstructions = "\n  Press space bar to start a drag.\n  When dragging you can use the arrow keys to move the item around and escape to cancel.\n  Some screen readers may require you to be in focus mode or to use your pass through key\n";
 
@@ -1816,7 +1818,7 @@
 
   var ReactReduxContext =
   /*#__PURE__*/
-  React__default.createContext(null);
+  React__default['default'].createContext(null);
 
   {
     ReactReduxContext.displayName = 'ReactRedux';
@@ -1988,7 +1990,7 @@
       };
     }, [contextValue, previousState]);
     var Context = context || ReactReduxContext;
-    return React__default.createElement(Context.Provider, {
+    return React__default['default'].createElement(Context.Provider, {
       value: contextValue
     }, children);
   }
@@ -2354,7 +2356,7 @@
         var ContextToUse = React.useMemo(function () {
           // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
           // Memoize the check that determines which context instance we should use.
-          return propsContext && propsContext.Consumer && reactIs_2(React__default.createElement(propsContext.Consumer, null)) ? propsContext : Context;
+          return propsContext && propsContext.Consumer && reactIs_2(React__default['default'].createElement(propsContext.Consumer, null)) ? propsContext : Context;
         }, [propsContext, Context]); // Retrieve the store and ancestor subscription via context, if available
 
         var contextValue = React.useContext(ContextToUse); // The store _must_ exist as either a prop or in context.
@@ -2450,7 +2452,7 @@
         // We memoize the elements for the rendered child component as an optimization.
 
         var renderedWrappedComponent = React.useMemo(function () {
-          return React__default.createElement(WrappedComponent, _extends({}, actualChildProps, {
+          return React__default['default'].createElement(WrappedComponent, _extends({}, actualChildProps, {
             ref: reactReduxForwardedRef
           }));
         }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]); // If React sees the exact same element reference as last time, it bails out of re-rendering
@@ -2461,7 +2463,7 @@
             // If this component is subscribed to store updates, we need to pass its own
             // subscription instance down to our descendants. That means rendering the same
             // Context instance, and putting a different value into the context.
-            return React__default.createElement(ContextToUse.Provider, {
+            return React__default['default'].createElement(ContextToUse.Provider, {
               value: overriddenContextValue
             }, renderedWrappedComponent);
           }
@@ -2472,13 +2474,13 @@
       } // If we're in "pure" mode, ensure our wrapper component only re-renders when incoming props have changed.
 
 
-      var Connect = pure ? React__default.memo(ConnectFunction) : ConnectFunction;
+      var Connect = pure ? React__default['default'].memo(ConnectFunction) : ConnectFunction;
       Connect.WrappedComponent = WrappedComponent;
       Connect.displayName = displayName;
 
       if (forwardRef) {
-        var forwarded = React__default.forwardRef(function forwardConnectRef(props, ref) {
-          return React__default.createElement(Connect, _extends({}, props, {
+        var forwarded = React__default['default'].forwardRef(function forwardConnectRef(props, ref) {
+          return React__default['default'].createElement(Connect, _extends({}, props, {
             reactReduxForwardedRef: ref
           }));
         });
@@ -3223,7 +3225,30 @@
     };
   });
 
-  var scrollDroppable = (function (droppable, newScroll) {
+  var updateSizes = function updateSizes(result, diff, isHeight) {
+    if (isHeight === void 0) {
+      isHeight = true;
+    }
+
+    if (!diff) return;
+    var boxKeys = ['marginBox', 'borderBox', 'paddingBox', 'contentBox'];
+    ['client', 'page'].forEach(function (key) {
+      boxKeys.forEach(function (boxKey) {
+        result[key][boxKey][isHeight ? 'bottom' : 'right'] += diff;
+        result[key][boxKey][isHeight ? 'height' : 'width'] += diff;
+        result[key][boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+      });
+    });
+    boxKeys.forEach(function (boxKey) {
+      result.subject.page[boxKey][isHeight ? 'bottom' : 'right'] += diff;
+      result.subject.page[boxKey][isHeight ? 'height' : 'width'] += diff;
+      result.subject.page[boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+    });
+    result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
+    result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+  };
+
+  var scrollDroppable = (function (droppable, newScroll, newClient) {
     !droppable.frame ?  invariant(false)  : void 0;
     var scrollable = droppable.frame;
     var scrollDiff = subtract(newScroll, scrollable.scroll.initial);
@@ -3252,6 +3277,11 @@
       frame: frame,
       subject: subject
     });
+
+    if (newClient) {
+      updateSizes(result, newClient.marginBox.height - droppable.client.marginBox.height);
+      updateSizes(result, newClient.marginBox.width - droppable.client.marginBox.width, false);
+    }
 
     return result;
   });
@@ -5293,7 +5323,7 @@
         published = _ref.published;
     var withScrollChange = published.modified.map(function (update) {
       var existing = state.dimensions.droppables[update.droppableId];
-      var scrolled = scrollDroppable(existing, update.scroll);
+      var scrolled = scrollDroppable(existing, update.scroll, update.newClient);
       return scrolled;
     });
 
@@ -6813,9 +6843,11 @@
         var updated = Object.keys(modified).map(function (id) {
           var entry = registry.droppable.getById(id);
           var scroll = entry.callbacks.getScrollWhileDragging();
+          var newClient = entry.callbacks.getNewClientWhileDragging();
           return {
             droppableId: id,
-            scroll: scroll
+            scroll: scroll,
+            newClient: newClient
           };
         });
         var result = {
@@ -8232,7 +8264,7 @@
     return registry;
   }
 
-  var StoreContext = React__default.createContext(null);
+  var StoreContext = React__default['default'].createContext(null);
 
   var getBodyElement = (function () {
     var body = document.body;
@@ -8348,7 +8380,7 @@
     return id;
   }
 
-  var AppContext = React__default.createContext(null);
+  var AppContext = React__default['default'].createContext(null);
 
   var peerDependencies = {
   	react: "^16.8.5",
@@ -8440,7 +8472,7 @@
 
   function useStartupValidation() {
     useDevSetupWarning(function () {
-      checkReactVersion(peerDependencies.react, React__default.version);
+      checkReactVersion(peerDependencies.react, React__default['default'].version);
       checkDoctype(document);
     }, []);
   }
@@ -9846,9 +9878,9 @@
     React.useEffect(function () {
       return tryResetStore;
     }, [tryResetStore]);
-    return React__default.createElement(AppContext.Provider, {
+    return React__default['default'].createElement(AppContext.Provider, {
       value: appContext
-    }, React__default.createElement(Provider, {
+    }, React__default['default'].createElement(Provider, {
       context: StoreContext,
       store: store
     }, props.children));
@@ -9871,8 +9903,8 @@
   function DragDropContext(props) {
     var contextId = useInstanceCount();
     var dragHandleUsageInstructions = props.dragHandleUsageInstructions || preset.dragHandleUsageInstructions;
-    return React__default.createElement(ErrorBoundary, null, function (setCallbacks) {
-      return React__default.createElement(App, {
+    return React__default['default'].createElement(ErrorBoundary, null, function (setCallbacks) {
+      return React__default['default'].createElement(App, {
         nonce: props.nonce,
         contextId: contextId,
         setCallbacks: setCallbacks,
@@ -10094,7 +10126,6 @@
     });
     return client;
   };
-
   var getDimension = (function (_ref) {
     var ref = _ref.ref,
         descriptor = _ref.descriptor,
@@ -10256,6 +10287,14 @@
       !(dragging && closest) ?  invariant(false, 'Can only recollect Droppable client for Droppables that have a scroll container')  : void 0;
       return getScroll$1(closest);
     }, []);
+    var getNewClientWhileDragging = useCallback(function () {
+      var previous = previousRef.current;
+      var ref = previous.getDroppableRef();
+      !ref ?  invariant(false, 'Cannot collect without a droppable ref')  : void 0;
+      var env = getEnv(ref);
+      var client = getClient(ref, env.closestScrollable);
+      return client;
+    }, []);
     var dragStopped = useCallback(function () {
       var dragging = whileDraggingRef.current;
       !dragging ?  invariant(false, 'Cannot stop drag when no active drag')  : void 0;
@@ -10283,9 +10322,10 @@
         getDimensionAndWatchScroll: getDimensionAndWatchScroll,
         getScrollWhileDragging: getScrollWhileDragging,
         dragStopped: dragStopped,
-        scroll: scroll
+        scroll: scroll,
+        getNewClientWhileDragging: getNewClientWhileDragging
       };
-    }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll]);
+    }, [dragStopped, getDimensionAndWatchScroll, getScrollWhileDragging, scroll, getNewClientWhileDragging]);
     var entry = useMemo(function () {
       return {
         uniqueId: uniqueId,
@@ -10430,7 +10470,7 @@
       animate: props.animate,
       placeholder: props.placeholder
     });
-    return React__default.createElement(props.placeholder.tagName, {
+    return React__default['default'].createElement(props.placeholder.tagName, {
       style: style,
       'data-rbd-placeholder-context-id': contextId,
       onTransitionEnd: onSizeChangeEnd,
@@ -10438,9 +10478,9 @@
     });
   }
 
-  var Placeholder$1 = React__default.memo(Placeholder);
+  var Placeholder$1 = React__default['default'].memo(Placeholder);
 
-  var DroppableContext = React__default.createContext(null);
+  var DroppableContext = React__default['default'].createContext(null);
 
   function checkIsValidInnerRef(el) {
     !(el && isHtmlElement(el)) ?  invariant(false, "\n    provided.innerRef has not been provided with a HTMLElement.\n\n    You can find a guide on using the innerRef callback functions at:\n    https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/using-inner-ref.md\n  ")  : void 0;
@@ -10584,7 +10624,7 @@
     };
 
     return AnimateInOut;
-  }(React__default.PureComponent);
+  }(React__default['default'].PureComponent);
 
   var zIndexOptions = {
     dragging: 5000,
@@ -11127,13 +11167,13 @@
       return null;
     }
 
-    return React__default.createElement(ConnectedDraggable, props);
+    return React__default['default'].createElement(ConnectedDraggable, props);
   }
   function PublicDraggable(props) {
     var isEnabled = typeof props.isDragDisabled === 'boolean' ? !props.isDragDisabled : true;
     var canDragInteractiveElements = Boolean(props.disableInteractiveElementBlocking);
     var shouldRespectForcePress = Boolean(props.shouldRespectForcePress);
-    return React__default.createElement(PrivateDraggable, _extends({}, props, {
+    return React__default['default'].createElement(PrivateDraggable, _extends({}, props, {
       isClone: false,
       isEnabled: isEnabled,
       canDragInteractiveElements: canDragInteractiveElements,
@@ -11194,14 +11234,14 @@
       ignoreContainerClipping: ignoreContainerClipping,
       getDroppableRef: getDroppableRef
     });
-    var placeholder = React__default.createElement(AnimateInOut, {
+    var placeholder = React__default['default'].createElement(AnimateInOut, {
       on: props.placeholder,
       shouldAnimate: props.shouldAnimatePlaceholder
     }, function (_ref) {
       var onClose = _ref.onClose,
           data = _ref.data,
           animate = _ref.animate;
-      return React__default.createElement(Placeholder$1, {
+      return React__default['default'].createElement(Placeholder$1, {
         placeholder: data,
         onClose: onClose,
         innerRef: setPlaceholderRef,
@@ -11236,7 +11276,7 @@
 
       var dragging = useClone.dragging,
           render = useClone.render;
-      var node = React__default.createElement(PrivateDraggable, {
+      var node = React__default['default'].createElement(PrivateDraggable, {
         draggableId: dragging.draggableId,
         index: dragging.source.index,
         isClone: true,
@@ -11246,10 +11286,10 @@
       }, function (draggableProvided, draggableSnapshot) {
         return render(draggableProvided, draggableSnapshot, dragging);
       });
-      return ReactDOM__default.createPortal(node, getContainerForClone());
+      return ReactDOM__default['default'].createPortal(node, getContainerForClone());
     }
 
-    return React__default.createElement(DroppableContext.Provider, {
+    return React__default['default'].createElement(DroppableContext.Provider, {
       value: droppableContext
     }, children(provided, snapshot), getClone());
   }
