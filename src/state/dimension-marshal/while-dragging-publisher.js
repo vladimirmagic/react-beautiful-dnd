@@ -1,23 +1,21 @@
 // @flow
 import type { Position } from 'css-box-model';
 import type {
-  DraggableId,
-  DroppableId,
   DraggableDescriptor,
-  Published,
   DraggableDimension,
-  DroppablePublish,
-  DroppableIdMap,
+  DraggableId,
   DraggableIdMap,
+  DroppableId,
+  DroppableIdMap,
+  DroppablePublish,
+  Published,
 } from '../../types';
-import type {
-  DroppableEntry,
-  Registry,
-  DraggableEntry,
-  DraggableEntryMap, ScrollData,
-} from '../registry/registry-types';
+import type { DraggableEntry, DraggableEntryMap, DroppableEntry, Registry, } from '../registry/registry-types';
 import * as timings from '../../debug/timings';
 import { origin } from '../position';
+import {
+  type BoxModel,
+} from 'css-box-model';
 
 export type WhileDraggingPublisher = {|
   add: (entry: DraggableEntry) => void,
@@ -86,11 +84,11 @@ export default function createPublisher({
           const entry: DroppableEntry = registry.droppable.getById(id);
 
           const scroll: Position = entry.callbacks.getScrollWhileDragging();
-          const scrollData: ScrollData = entry.callbacks.getScrollDataWhileDragging();
+          const newClient: BoxModel = entry.callbacks.getNewClientWhileDragging();
           return {
             droppableId: id,
             scroll,
-            scrollData
+            newClient
           };
         },
       );

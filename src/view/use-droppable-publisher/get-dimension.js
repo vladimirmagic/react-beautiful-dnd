@@ -20,7 +20,7 @@ import type {
 } from '../../types';
 import getScroll from './get-scroll';
 
-const getClient = (
+export const getClient = (
   targetRef: HTMLElement,
   closestScrollable: ?Element,
 ): BoxModel => {

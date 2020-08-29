@@ -1,8 +1,7 @@
 // @flow
 import { type Position } from 'css-box-model';
 import { add, apply, isEqual, origin } from '../position';
-import type { DroppableDimension, Scrollable, Viewport } from '../../types';
-import getMaxScroll from '../get-max-scroll';
+import type { DroppableDimension, Viewport, Scrollable } from '../../types';
 
 type CanPartiallyScrollArgs = {|
   max: Position,
@@ -132,22 +131,9 @@ export const canScrollDroppable = (
     return false;
   }
 
-  let max = frame.scroll.max;
-
-  /*const el = document.querySelector(`.droppable-list-${droppable.descriptor.id}`);
-  if (el) {
-    max = getMaxScroll({
-      scrollHeight: el.scrollHeight,
-      scrollWidth: el.scrollWidth,
-      height: frame.frameClient.paddingBox.height,
-      width: frame.frameClient.paddingBox.width,
-    });
-  }*/
-  console.log('aaaaaaaa', max, droppable, JSON.stringify(droppable));
-
   return canPartiallyScroll({
     current: frame.scroll.current,
-    max: max,
+    max: frame.scroll.max,
     change,
   });
 };

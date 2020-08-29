@@ -1,19 +1,37 @@
 // @flow
-import { type Position } from 'css-box-model';
+import { type Position, type BoxModel } from 'css-box-model';
 import { invariant } from '../../invariant';
-import type {
-  DroppableDimension,
-  Scrollable,
-  DroppableSubject,
-} from '../../types';
+import type { DroppableDimension, DroppableSubject, Scrollable } from '../../types';
 import { negate, subtract } from '../position';
 import getSubject from './util/get-subject';
-import type { ScrollData } from '../registry/registry-types';
+
+const updateSizes = (
+  result: DroppableDimension,
+  diff: number,
+  isHeight: boolean = true
+) => {
+  if (!diff) return;
+  const boxKeys = ['marginBox', 'borderBox', 'paddingBox', 'contentBox'];
+  ['client', 'page'].forEach(key => {
+    boxKeys.forEach(boxKey => {
+      result[key][boxKey][isHeight ? 'bottom' : 'right'] += diff;
+      result[key][boxKey][isHeight ? 'height' : 'width'] += diff;
+      result[key][boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+    })
+  })
+  boxKeys.forEach(boxKey => {
+    result.subject.page[boxKey][isHeight ? 'bottom' : 'right'] += diff;
+    result.subject.page[boxKey][isHeight ? 'height' : 'width'] += diff;
+    result.subject.page[boxKey].center[isHeight ? 'y' : 'x'] += diff / 2;
+  })
+  result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
+  result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+}
 
 export default (
   droppable: DroppableDimension,
   newScroll: Position,
-  scrollData?: ScrollData
+  newClient?: BoxModel
 ): DroppableDimension => {
   invariant(droppable.frame);
   const scrollable: Scrollable = droppable.frame;
@@ -36,12 +54,9 @@ export default (
         displacement: scrollDisplacement,
       },
       // TODO: rename 'softMax?'
-      max: scrollData && scrollData.maxScroll ? scrollData.maxScroll : scrollable.scroll.max,
+      max: scrollable.scroll.max,
     },
   };
-  if (scrollData && scrollData.scrollSize) {
-    frame.scrollSize = scrollData.scrollSize;
-  }
 
   const subject: DroppableSubject = getSubject({
     page: droppable.subject.page,
@@ -54,5 +69,12 @@ export default (
     frame,
     subject,
   };
+
+  if (newClient) {
+      updateSizes(result, newClient.marginBox.height - droppable.client.marginBox.height)
+      updateSizes(result, newClient.marginBox.width - droppable.client.marginBox.width, false)
+  }
+
+
   return result;
 };

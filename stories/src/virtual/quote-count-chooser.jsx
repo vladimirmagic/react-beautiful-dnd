@@ -17,7 +17,7 @@ type Option = {|
 
 const options: Option[] = [
   { name: 'Small', value: 8 },
-  { name: 'Medium', value: 60 },
+  { name: 'Medium', value: 500 },
   { name: 'Large', value: 10000 },
 ];
 

@@ -9,7 +9,7 @@ import ReactVirtualizedBoard from './src/virtual/react-virtualized/board';
 import ReactVirtualizedWindowList from './src/virtual/react-virtualized/window-list';
 
 storiesOf('Virtual: react-window', module)
-  .add('list', () => <ReactWindowList initial={getQuotes(25)} />)
+  .add('list', () => <ReactWindowList initial={getQuotes(1000)} />)
   .add('board', () => <ReactWindowBoard />);
 
 storiesOf('Virtual: react-virtualized', module)
