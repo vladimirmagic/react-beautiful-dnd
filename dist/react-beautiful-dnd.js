@@ -6830,33 +6830,35 @@
 
       callbacks.collectionStarting();
       frameId = requestAnimationFrame(function () {
-        frameId = null;
-        var _staging = staging,
-            additions = _staging.additions,
-            removals = _staging.removals,
-            modified = _staging.modified;
-        var added = Object.keys(additions).map(function (id) {
-          return registry.draggable.getById(id).getDimension(origin);
-        }).sort(function (a, b) {
-          return a.descriptor.index - b.descriptor.index;
-        });
-        var updated = Object.keys(modified).map(function (id) {
-          var entry = registry.droppable.getById(id);
-          var scroll = entry.callbacks.getScrollWhileDragging();
-          var newClient = entry.callbacks.getNewClientWhileDragging();
-          return {
-            droppableId: id,
-            scroll: scroll,
-            newClient: newClient
+        setTimeout(function () {
+          frameId = null;
+          var _staging = staging,
+              additions = _staging.additions,
+              removals = _staging.removals,
+              modified = _staging.modified;
+          var added = Object.keys(additions).map(function (id) {
+            return registry.draggable.getById(id).getDimension(origin);
+          }).sort(function (a, b) {
+            return a.descriptor.index - b.descriptor.index;
+          });
+          var updated = Object.keys(modified).map(function (id) {
+            var entry = registry.droppable.getById(id);
+            var scroll = entry.callbacks.getScrollWhileDragging();
+            var newClient = entry.callbacks.getNewClientWhileDragging();
+            return {
+              droppableId: id,
+              scroll: scroll,
+              newClient: newClient
+            };
+          });
+          var result = {
+            additions: added,
+            removals: Object.keys(removals),
+            modified: updated
           };
-        });
-        var result = {
-          additions: added,
-          removals: Object.keys(removals),
-          modified: updated
-        };
-        staging = clean$1();
-        callbacks.publish(result);
+          staging = clean$1();
+          callbacks.publish(result);
+        }, 10);
       });
     };
 

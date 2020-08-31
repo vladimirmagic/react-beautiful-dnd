@@ -61,48 +61,50 @@ export default function createPublisher({
 
     callbacks.collectionStarting();
     frameId = requestAnimationFrame(() => {
-      frameId = null;
-      timings.start(timingKey);
+      setTimeout(() => { // ждем когда выставится высота картам
+        frameId = null;
+        timings.start(timingKey);
 
-      const { additions, removals, modified } = staging;
+        const { additions, removals, modified } = staging;
 
-      const added: DraggableDimension[] = Object.keys(additions)
-        .map(
-          // Using the origin as the window scroll. This will be adjusted when processing the published values
-          (id: DraggableId): DraggableDimension =>
-            registry.draggable.getById(id).getDimension(origin),
-        )
-        // Dimensions are not guarenteed to be ordered in the same order as keys
-        // So we need to sort them so they are in the correct order
-        .sort(
-          (a: DraggableDimension, b: DraggableDimension): number =>
-            a.descriptor.index - b.descriptor.index,
+        const added: DraggableDimension[] = Object.keys(additions)
+          .map(
+            // Using the origin as the window scroll. This will be adjusted when processing the published values
+            (id: DraggableId): DraggableDimension =>
+              registry.draggable.getById(id).getDimension(origin),
+          )
+          // Dimensions are not guarenteed to be ordered in the same order as keys
+          // So we need to sort them so they are in the correct order
+          .sort(
+            (a: DraggableDimension, b: DraggableDimension): number =>
+              a.descriptor.index - b.descriptor.index,
+          );
+
+        const updated: DroppablePublish[] = Object.keys(modified).map(
+          (id: DroppableId) => {
+            const entry: DroppableEntry = registry.droppable.getById(id);
+
+            const scroll: Position = entry.callbacks.getScrollWhileDragging();
+            const newClient: BoxModel = entry.callbacks.getNewClientWhileDragging();
+            return {
+              droppableId: id,
+              scroll,
+              newClient
+            };
+          },
         );
 
-      const updated: DroppablePublish[] = Object.keys(modified).map(
-        (id: DroppableId) => {
-          const entry: DroppableEntry = registry.droppable.getById(id);
+        const result: Published = {
+          additions: added,
+          removals: Object.keys(removals),
+          modified: updated,
+        };
 
-          const scroll: Position = entry.callbacks.getScrollWhileDragging();
-          const newClient: BoxModel = entry.callbacks.getNewClientWhileDragging();
-          return {
-            droppableId: id,
-            scroll,
-            newClient
-          };
-        },
-      );
+        staging = clean();
 
-      const result: Published = {
-        additions: added,
-        removals: Object.keys(removals),
-        modified: updated,
-      };
-
-      staging = clean();
-
-      timings.finish(timingKey);
-      callbacks.publish(result);
+        timings.finish(timingKey);
+        callbacks.publish(result);
+      }, 10);
     });
   };
 
