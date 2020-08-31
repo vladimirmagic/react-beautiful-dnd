@@ -3979,7 +3979,7 @@ function createPublisher(_ref) {
         staging = clean$1();
         finish();
         callbacks.publish(result);
-      }, 10);
+      }, 30);
     });
   };
 

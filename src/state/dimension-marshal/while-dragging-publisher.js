@@ -104,7 +104,7 @@ export default function createPublisher({
 
         timings.finish(timingKey);
         callbacks.publish(result);
-      }, 10);
+      }, 30);
     });
   };
 

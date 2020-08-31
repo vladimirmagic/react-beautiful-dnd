@@ -6858,7 +6858,7 @@
           };
           staging = clean$1();
           callbacks.publish(result);
-        }, 10);
+        }, 30);
       });
     };
 
