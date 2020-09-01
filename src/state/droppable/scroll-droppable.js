@@ -26,6 +26,9 @@ const updateSizes = (
   })
   result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
   result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+  if (result.subject.withPlaceholder) {
+    result.subject.withPlaceholder.oldFrameMaxScroll[isHeight ? 'y' : 'x'] += diff
+  }
 }
 
 export default (
@@ -74,7 +77,6 @@ export default (
       updateSizes(result, newClient.marginBox.height - droppable.client.marginBox.height)
       updateSizes(result, newClient.marginBox.width - droppable.client.marginBox.width, false)
   }
-
 
   return result;
 };

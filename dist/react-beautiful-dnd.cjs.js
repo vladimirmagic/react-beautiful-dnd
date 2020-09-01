@@ -414,6 +414,10 @@ var updateSizes = function updateSizes(result, diff, isHeight) {
   });
   result.frame.scrollSize[isHeight ? 'scrollHeight' : 'scrollWidth'] += diff;
   result.frame.scroll.max[isHeight ? 'y' : 'x'] += diff;
+
+  if (result.subject.withPlaceholder) {
+    result.subject.withPlaceholder.oldFrameMaxScroll[isHeight ? 'y' : 'x'] += diff;
+  }
 };
 
 var scrollDroppable = (function (droppable, newScroll, newClient) {
