@@ -6814,6 +6814,10 @@
     return createStore(reducer, composeEnhancers(applyMiddleware(style(styleMarshal), dimensionMarshalStopper(dimensionMarshal), lift$1(dimensionMarshal), drop$1, dropAnimationFinish, dropAnimationFlushOnScroll, pendingDrop, autoScroll(autoScroller), scrollListener, focus(focusMarshal), responders(getResponders, announce))));
   });
 
+  var config = {
+    defaultHeight: null
+  };
+
   var clean$1 = function clean() {
     return {
       additions: {},
@@ -6834,15 +6838,34 @@
 
       callbacks.collectionStarting();
       frameId = requestAnimationFrame(function () {
-        setTimeout(function () {
-          frameId = null;
-          var _staging = staging,
-              additions = _staging.additions,
-              removals = _staging.removals,
-              modified = _staging.modified;
-          var added = Object.keys(additions).map(function (id) {
-            return registry.draggable.getById(id).getDimension(origin);
-          }).sort(function (a, b) {
+        frameId = null;
+        var _staging = staging,
+            additions = _staging.additions,
+            removals = _staging.removals,
+            modified = _staging.modified;
+
+        var tryToGetDimensions = function tryToGetDimensions(id, resolve, attempt) {
+          if (attempt === void 0) {
+            attempt = 0;
+          }
+
+          var dimension = registry.draggable.getById(id).getDimension(origin);
+
+          if (config.defaultHeight && dimension.client.marginBox.height === config.defaultHeight && attempt < 6) {
+            setTimeout(function () {
+              return tryToGetDimensions(id, resolve, attempt + 1);
+            }, 5);
+          } else {
+            resolve(dimension);
+          }
+        };
+
+        Promise.all(Object.keys(additions).map(function (id) {
+          return new Promise(function (resolve) {
+            tryToGetDimensions(id, resolve);
+          });
+        })).then(function (added) {
+          added.sort(function (a, b) {
             return a.descriptor.index - b.descriptor.index;
           });
           var updated = Object.keys(modified).map(function (id) {
@@ -6862,7 +6885,7 @@
           };
           staging = clean$1();
           callbacks.publish(result);
-        }, 30);
+        });
       });
     };
 
@@ -7196,7 +7219,7 @@
     return dimension;
   });
 
-  var config = {
+  var config$1 = {
     startFromPercentage: 0.25,
     maxScrollAtPercentage: 0.05,
     maxPixelScroll: 28,
@@ -7213,17 +7236,17 @@
   };
 
   var getDistanceThresholds = (function (container, axis, isCloserToEnd, contentBox) {
-    var startScrollingFrom = container[axis.size] * config.startFromPercentage;
-    var maxScrollValueAt = container[axis.size] * config.maxScrollAtPercentage;
+    var startScrollingFrom = container[axis.size] * config$1.startFromPercentage;
+    var maxScrollValueAt = container[axis.size] * config$1.maxScrollAtPercentage;
 
     if (axis.direction === 'horizontal' && contentBox) {
       var center = contentBox.width / 2;
 
       if (isCloserToEnd) {
-        maxScrollValueAt = config.startRightFromPixels - config.overlapPixels;
+        maxScrollValueAt = config$1.startRightFromPixels - config$1.overlapPixels;
         startScrollingFrom = center + maxScrollValueAt;
       } else {
-        maxScrollValueAt = config.startLeftFromPixels - config.overlapPixels;
+        maxScrollValueAt = config$1.startLeftFromPixels - config$1.overlapPixels;
         startScrollingFrom = center + maxScrollValueAt;
       }
     }
@@ -7259,7 +7282,7 @@
     }
 
     if (distanceToEdge <= thresholds.maxScrollValueAt) {
-      return config.maxPixelScroll;
+      return config$1.maxPixelScroll;
     }
 
     if (distanceToEdge === thresholds.startScrollingFrom) {
@@ -7272,12 +7295,12 @@
       current: distanceToEdge
     });
     var percentageFromStartScrollingFrom = 1 - percentageFromMaxScrollValueAt;
-    var scroll = config.maxPixelScroll * config.ease(percentageFromStartScrollingFrom);
+    var scroll = config$1.maxPixelScroll * config$1.ease(percentageFromStartScrollingFrom);
     return Math.ceil(scroll);
   });
 
-  var accelerateAt = config.durationDampening.accelerateAt;
-  var stopAt = config.durationDampening.stopDampeningAt;
+  var accelerateAt = config$1.durationDampening.accelerateAt;
+  var stopAt = config$1.durationDampening.stopDampeningAt;
   var dampenValueByTime = (function (proposedScroll, dragStartTime) {
     var startOfRange = dragStartTime;
     var endOfRange = stopAt;
@@ -7297,7 +7320,7 @@
       endOfRange: endOfRange,
       current: runTime
     });
-    var scroll = proposedScroll * config.ease(betweenAccelerateAtAndStopAtPercentage);
+    var scroll = proposedScroll * config$1.ease(betweenAccelerateAtAndStopAtPercentage);
     return Math.ceil(scroll);
   });
 
@@ -11466,8 +11489,9 @@
   exports.DragDropContext = DragDropContext;
   exports.Draggable = PublicDraggable;
   exports.Droppable = ConnectedDroppable;
+  exports.dimensionConfig = config;
   exports.resetServerContext = resetServerContext;
-  exports.scrollConfig = config;
+  exports.scrollConfig = config$1;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

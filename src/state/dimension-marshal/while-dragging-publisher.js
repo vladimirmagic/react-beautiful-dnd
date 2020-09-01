@@ -16,6 +16,7 @@ import { origin } from '../position';
 import {
   type BoxModel,
 } from 'css-box-model';
+import config from './config';
 
 export type WhileDraggingPublisher = {|
   add: (entry: DraggableEntry) => void,
@@ -61,24 +62,32 @@ export default function createPublisher({
 
     callbacks.collectionStarting();
     frameId = requestAnimationFrame(() => {
-      setTimeout(() => { // ждем когда выставится высота картам
-        frameId = null;
-        timings.start(timingKey);
+      frameId = null;
+      timings.start(timingKey);
 
-        const { additions, removals, modified } = staging;
+      const { additions, removals, modified } = staging;
 
-        const added: DraggableDimension[] = Object.keys(additions)
-          .map(
-            // Using the origin as the window scroll. This will be adjusted when processing the published values
-            (id: DraggableId): DraggableDimension =>
-              registry.draggable.getById(id).getDimension(origin),
-          )
-          // Dimensions are not guarenteed to be ordered in the same order as keys
-          // So we need to sort them so they are in the correct order
-          .sort(
-            (a: DraggableDimension, b: DraggableDimension): number =>
-              a.descriptor.index - b.descriptor.index,
-          );
+      const tryToGetDimensions = (id: DraggableId, resolve: any, attempt: number = 0) => {
+        // Using the origin as the window scroll. This will be adjusted when processing the published values
+        const dimension: DraggableDimension = registry.draggable.getById(id).getDimension(origin);
+        if (config.defaultHeight && dimension.client.marginBox.height === config.defaultHeight && attempt < 6) {
+          setTimeout(() =>  tryToGetDimensions(id, resolve, attempt + 1), 5); // ждем когда выставится высота картам
+        } else {
+          resolve(dimension)
+        }
+      }
+
+      Promise.all(Object.keys(additions).map((id: DraggableId) => {
+        return new Promise((resolve) => {
+          tryToGetDimensions(id, resolve)
+        })
+      })).then((added: DraggableDimension[]) => {
+        // Dimensions are not guarenteed to be ordered in the same order as keys
+        // So we need to sort them so they are in the correct order
+        added.sort(
+          (a: DraggableDimension, b: DraggableDimension): number =>
+            a.descriptor.index - b.descriptor.index,
+        );
 
         const updated: DroppablePublish[] = Object.keys(modified).map(
           (id: DroppableId) => {
@@ -104,7 +113,45 @@ export default function createPublisher({
 
         timings.finish(timingKey);
         callbacks.publish(result);
-      }, 30);
+      })
+
+      /*const added: DraggableDimension[] = Object.keys(additions)
+        .map(
+          // Using the origin as the window scroll. This will be adjusted when processing the published values
+          (id: DraggableId): DraggableDimension =>
+            registry.draggable.getById(id).getDimension(origin),
+        )
+        // Dimensions are not guarenteed to be ordered in the same order as keys
+        // So we need to sort them so they are in the correct order
+        .sort(
+          (a: DraggableDimension, b: DraggableDimension): number =>
+            a.descriptor.index - b.descriptor.index,
+        );
+
+      const updated: DroppablePublish[] = Object.keys(modified).map(
+        (id: DroppableId) => {
+          const entry: DroppableEntry = registry.droppable.getById(id);
+
+          const scroll: Position = entry.callbacks.getScrollWhileDragging();
+          const newClient: BoxModel = entry.callbacks.getNewClientWhileDragging();
+          return {
+            droppableId: id,
+            scroll,
+            newClient
+          };
+        },
+      );
+
+      const result: Published = {
+        additions: added,
+        removals: Object.keys(removals),
+        modified: updated,
+      };
+
+      staging = clean();
+
+      timings.finish(timingKey);
+      callbacks.publish(result);*/
     });
   };
 

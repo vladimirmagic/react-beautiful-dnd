@@ -59,3 +59,4 @@ export type {
 } from './view/draggable/draggable-types';
 
 export { default as scrollConfig } from './state/auto-scroller/fluid-scroller/config';
+export { default as dimensionConfig } from './state/dimension-marshal/config';
