@@ -5878,6 +5878,12 @@ function useMouseSensor(api) {
         }
 
         event.preventDefault();
+        var activeElement = document.activeElement;
+
+        if (activeElement) {
+          activeElement.blur();
+        }
+
         var point = {
           x: event.clientX,
           y: event.clientY
@@ -6316,6 +6322,12 @@ function useMouseSensor$1(api) {
           y: clientY
         };
         unbindEventsRef.current();
+        var activeElement = document.activeElement;
+
+        if (activeElement) {
+          activeElement.blur();
+        }
+
         startPendingDrag(actions, point, event);
       }
     };

@@ -296,6 +296,11 @@ export default function useMouseSensor(api: SensorAPI) {
         // unbind this event handler
         unbindEventsRef.current();
 
+        const activeElement = document.activeElement;
+        if (activeElement) {
+          activeElement.blur();
+        }
+
         // eslint-disable-next-line no-use-before-define
         startPendingDrag(actions, point, event);
       },

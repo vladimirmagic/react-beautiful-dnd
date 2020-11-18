@@ -249,6 +249,11 @@ export default function useMouseSensor(api: SensorAPI) {
         // consuming the event
         event.preventDefault();
 
+        const activeElement = document.activeElement;
+        if (activeElement) {
+          activeElement.blur();
+        }
+
         const point: Position = {
           x: event.clientX,
           y: event.clientY,
