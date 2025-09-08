@@ -1,13 +1,11 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom')) :
   typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ReactBeautifulDnd = {}, global.React, global.ReactDOM));
+  (global = global || self, factory(global.ReactBeautifulDnd = {}, global.React, global.ReactDOM));
 }(this, (function (exports, React, ReactDOM) { 'use strict';
 
-  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-  var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-  var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
+  var React__default = 'default' in React ? React['default'] : React;
+  var ReactDOM__default = 'default' in ReactDOM ? ReactDOM['default'] : ReactDOM;
 
   function _inheritsLoose(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
@@ -63,7 +61,7 @@
   }
 
   function getOptions(shared, fromBinding) {
-    return _extends({}, shared, fromBinding);
+    return _extends({}, shared, {}, fromBinding);
   }
 
   function bindEvents(el, bindings, sharedOptions) {
@@ -179,7 +177,7 @@
     };
 
     return ErrorBoundary;
-  }(React__default['default'].Component);
+  }(React__default.Component);
 
   var dragHandleUsageInstructions = "\n  Press space bar to start a drag.\n  When dragging you can use the arrow keys to move the item around and escape to cancel.\n  Some screen readers may require you to be in focus mode or to use your pass through key\n";
 
@@ -813,9 +811,52 @@
     warning$1('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
   }
 
+  function unwrapExports (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
+
+  var reactIs_production_min = createCommonjsModule(function (module, exports) {
+  Object.defineProperty(exports,"__esModule",{value:!0});
+  var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?Symbol.for("react.suspense_list"):
+  60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.fundamental"):60117,w=b?Symbol.for("react.responder"):60118,x=b?Symbol.for("react.scope"):60119;function y(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function z(a){return y(a)===m}
+  exports.typeOf=y;exports.AsyncMode=l;exports.ConcurrentMode=m;exports.ContextConsumer=k;exports.ContextProvider=h;exports.Element=c;exports.ForwardRef=n;exports.Fragment=e;exports.Lazy=t;exports.Memo=r;exports.Portal=d;exports.Profiler=g;exports.StrictMode=f;exports.Suspense=p;
+  exports.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===v||a.$$typeof===w||a.$$typeof===x)};exports.isAsyncMode=function(a){return z(a)||y(a)===l};exports.isConcurrentMode=z;exports.isContextConsumer=function(a){return y(a)===k};exports.isContextProvider=function(a){return y(a)===h};
+  exports.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};exports.isForwardRef=function(a){return y(a)===n};exports.isFragment=function(a){return y(a)===e};exports.isLazy=function(a){return y(a)===t};exports.isMemo=function(a){return y(a)===r};exports.isPortal=function(a){return y(a)===d};exports.isProfiler=function(a){return y(a)===g};exports.isStrictMode=function(a){return y(a)===f};exports.isSuspense=function(a){return y(a)===p};
+  });
+
+  unwrapExports(reactIs_production_min);
+  var reactIs_production_min_1 = reactIs_production_min.typeOf;
+  var reactIs_production_min_2 = reactIs_production_min.AsyncMode;
+  var reactIs_production_min_3 = reactIs_production_min.ConcurrentMode;
+  var reactIs_production_min_4 = reactIs_production_min.ContextConsumer;
+  var reactIs_production_min_5 = reactIs_production_min.ContextProvider;
+  var reactIs_production_min_6 = reactIs_production_min.Element;
+  var reactIs_production_min_7 = reactIs_production_min.ForwardRef;
+  var reactIs_production_min_8 = reactIs_production_min.Fragment;
+  var reactIs_production_min_9 = reactIs_production_min.Lazy;
+  var reactIs_production_min_10 = reactIs_production_min.Memo;
+  var reactIs_production_min_11 = reactIs_production_min.Portal;
+  var reactIs_production_min_12 = reactIs_production_min.Profiler;
+  var reactIs_production_min_13 = reactIs_production_min.StrictMode;
+  var reactIs_production_min_14 = reactIs_production_min.Suspense;
+  var reactIs_production_min_15 = reactIs_production_min.isValidElementType;
+  var reactIs_production_min_16 = reactIs_production_min.isAsyncMode;
+  var reactIs_production_min_17 = reactIs_production_min.isConcurrentMode;
+  var reactIs_production_min_18 = reactIs_production_min.isContextConsumer;
+  var reactIs_production_min_19 = reactIs_production_min.isContextProvider;
+  var reactIs_production_min_20 = reactIs_production_min.isElement;
+  var reactIs_production_min_21 = reactIs_production_min.isForwardRef;
+  var reactIs_production_min_22 = reactIs_production_min.isFragment;
+  var reactIs_production_min_23 = reactIs_production_min.isLazy;
+  var reactIs_production_min_24 = reactIs_production_min.isMemo;
+  var reactIs_production_min_25 = reactIs_production_min.isPortal;
+  var reactIs_production_min_26 = reactIs_production_min.isProfiler;
+  var reactIs_production_min_27 = reactIs_production_min.isStrictMode;
+  var reactIs_production_min_28 = reactIs_production_min.isSuspense;
 
   var reactIs_development = createCommonjsModule(function (module, exports) {
 
@@ -823,6 +864,8 @@
 
   {
     (function() {
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
   // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
   // nor polyfill, then a plain number is used for performance.
@@ -843,15 +886,69 @@
   var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
   var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
   var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-  var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
   var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
   var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
   var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
 
   function isValidElementType(type) {
     return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-    type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+    type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE);
   }
+
+  /**
+   * Forked from fbjs/warning:
+   * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
+   *
+   * Only change is we use console.warn instead of console.error,
+   * and do nothing when 'console' is not supported.
+   * This really simplifies the code.
+   * ---
+   * Similar to invariant but only logs a warning if the condition is not met.
+   * This can be used to log issues in development environments in critical
+   * paths. Removing the logging code for production environments will keep the
+   * same logic and follow the same code paths.
+   */
+  var lowPriorityWarningWithoutStack = function () {};
+
+  {
+    var printWarning = function (format) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      var argIndex = 0;
+      var message = 'Warning: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+
+      if (typeof console !== 'undefined') {
+        console.warn(message);
+      }
+
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+
+    lowPriorityWarningWithoutStack = function (condition, format) {
+      if (format === undefined) {
+        throw new Error('`lowPriorityWarningWithoutStack(condition, format, ...args)` requires a warning ' + 'message argument');
+      }
+
+      if (!condition) {
+        for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+          args[_key2 - 2] = arguments[_key2];
+        }
+
+        printWarning.apply(void 0, [format].concat(args));
+      }
+    };
+  }
+
+  var lowPriorityWarningWithoutStack$1 = lowPriorityWarningWithoutStack;
 
   function typeOf(object) {
     if (typeof object === 'object' && object !== null) {
@@ -913,9 +1010,8 @@
   function isAsyncMode(object) {
     {
       if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-        hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-
-        console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+        hasWarnedAboutDeprecatedIsAsyncMode = true;
+        lowPriorityWarningWithoutStack$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
       }
     }
 
@@ -958,6 +1054,7 @@
     return typeOf(object) === REACT_SUSPENSE_TYPE;
   }
 
+  exports.typeOf = typeOf;
   exports.AsyncMode = AsyncMode;
   exports.ConcurrentMode = ConcurrentMode;
   exports.ContextConsumer = ContextConsumer;
@@ -971,6 +1068,7 @@
   exports.Profiler = Profiler;
   exports.StrictMode = StrictMode;
   exports.Suspense = Suspense;
+  exports.isValidElementType = isValidElementType;
   exports.isAsyncMode = isAsyncMode;
   exports.isConcurrentMode = isConcurrentMode;
   exports.isContextConsumer = isContextConsumer;
@@ -984,39 +1082,39 @@
   exports.isProfiler = isProfiler;
   exports.isStrictMode = isStrictMode;
   exports.isSuspense = isSuspense;
-  exports.isValidElementType = isValidElementType;
-  exports.typeOf = typeOf;
     })();
   }
   });
-  var reactIs_development_1 = reactIs_development.AsyncMode;
-  var reactIs_development_2 = reactIs_development.ConcurrentMode;
-  var reactIs_development_3 = reactIs_development.ContextConsumer;
-  var reactIs_development_4 = reactIs_development.ContextProvider;
-  var reactIs_development_5 = reactIs_development.Element;
-  var reactIs_development_6 = reactIs_development.ForwardRef;
-  var reactIs_development_7 = reactIs_development.Fragment;
-  var reactIs_development_8 = reactIs_development.Lazy;
-  var reactIs_development_9 = reactIs_development.Memo;
-  var reactIs_development_10 = reactIs_development.Portal;
-  var reactIs_development_11 = reactIs_development.Profiler;
-  var reactIs_development_12 = reactIs_development.StrictMode;
-  var reactIs_development_13 = reactIs_development.Suspense;
-  var reactIs_development_14 = reactIs_development.isAsyncMode;
-  var reactIs_development_15 = reactIs_development.isConcurrentMode;
-  var reactIs_development_16 = reactIs_development.isContextConsumer;
-  var reactIs_development_17 = reactIs_development.isContextProvider;
-  var reactIs_development_18 = reactIs_development.isElement;
-  var reactIs_development_19 = reactIs_development.isForwardRef;
-  var reactIs_development_20 = reactIs_development.isFragment;
-  var reactIs_development_21 = reactIs_development.isLazy;
-  var reactIs_development_22 = reactIs_development.isMemo;
-  var reactIs_development_23 = reactIs_development.isPortal;
-  var reactIs_development_24 = reactIs_development.isProfiler;
-  var reactIs_development_25 = reactIs_development.isStrictMode;
-  var reactIs_development_26 = reactIs_development.isSuspense;
-  var reactIs_development_27 = reactIs_development.isValidElementType;
-  var reactIs_development_28 = reactIs_development.typeOf;
+
+  unwrapExports(reactIs_development);
+  var reactIs_development_1 = reactIs_development.typeOf;
+  var reactIs_development_2 = reactIs_development.AsyncMode;
+  var reactIs_development_3 = reactIs_development.ConcurrentMode;
+  var reactIs_development_4 = reactIs_development.ContextConsumer;
+  var reactIs_development_5 = reactIs_development.ContextProvider;
+  var reactIs_development_6 = reactIs_development.Element;
+  var reactIs_development_7 = reactIs_development.ForwardRef;
+  var reactIs_development_8 = reactIs_development.Fragment;
+  var reactIs_development_9 = reactIs_development.Lazy;
+  var reactIs_development_10 = reactIs_development.Memo;
+  var reactIs_development_11 = reactIs_development.Portal;
+  var reactIs_development_12 = reactIs_development.Profiler;
+  var reactIs_development_13 = reactIs_development.StrictMode;
+  var reactIs_development_14 = reactIs_development.Suspense;
+  var reactIs_development_15 = reactIs_development.isValidElementType;
+  var reactIs_development_16 = reactIs_development.isAsyncMode;
+  var reactIs_development_17 = reactIs_development.isConcurrentMode;
+  var reactIs_development_18 = reactIs_development.isContextConsumer;
+  var reactIs_development_19 = reactIs_development.isContextProvider;
+  var reactIs_development_20 = reactIs_development.isElement;
+  var reactIs_development_21 = reactIs_development.isForwardRef;
+  var reactIs_development_22 = reactIs_development.isFragment;
+  var reactIs_development_23 = reactIs_development.isLazy;
+  var reactIs_development_24 = reactIs_development.isMemo;
+  var reactIs_development_25 = reactIs_development.isPortal;
+  var reactIs_development_26 = reactIs_development.isProfiler;
+  var reactIs_development_27 = reactIs_development.isStrictMode;
+  var reactIs_development_28 = reactIs_development.isSuspense;
 
   var reactIs = createCommonjsModule(function (module) {
 
@@ -1818,7 +1916,7 @@
 
   var ReactReduxContext =
   /*#__PURE__*/
-  React__default['default'].createContext(null);
+  React__default.createContext(null);
 
   {
     ReactReduxContext.displayName = 'ReactRedux';
@@ -1990,7 +2088,7 @@
       };
     }, [contextValue, previousState]);
     var Context = context || ReactReduxContext;
-    return React__default['default'].createElement(Context.Provider, {
+    return React__default.createElement(Context.Provider, {
       value: contextValue
     }, children);
   }
@@ -2005,6 +2103,24 @@
       context: propTypes.object,
       children: propTypes.any
     };
+  }
+
+  function _extends$1() {
+    _extends$1 = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends$1.apply(this, arguments);
   }
 
   function _objectWithoutPropertiesLoose(source, excluded) {
@@ -2315,7 +2431,7 @@
       var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
       var displayName = getDisplayName(wrappedComponentName);
 
-      var selectorFactoryOptions = _extends({}, connectOptions, {
+      var selectorFactoryOptions = _extends$1({}, connectOptions, {
         getDisplayName: getDisplayName,
         methodName: methodName,
         renderCountProp: renderCountProp,
@@ -2344,19 +2460,19 @@
           // Distinguish between actual "data" props that were passed to the wrapper component,
           // and values needed to control behavior (forwarded refs, alternate context instances).
           // To maintain the wrapperProps object reference, memoize this destructuring.
-          var reactReduxForwardedRef = props.reactReduxForwardedRef,
-              wrapperProps = _objectWithoutPropertiesLoose(props, ["reactReduxForwardedRef"]);
+          var forwardedRef = props.forwardedRef,
+              wrapperProps = _objectWithoutPropertiesLoose(props, ["forwardedRef"]);
 
-          return [props.context, reactReduxForwardedRef, wrapperProps];
+          return [props.context, forwardedRef, wrapperProps];
         }, [props]),
             propsContext = _useMemo[0],
-            reactReduxForwardedRef = _useMemo[1],
+            forwardedRef = _useMemo[1],
             wrapperProps = _useMemo[2];
 
         var ContextToUse = React.useMemo(function () {
           // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
           // Memoize the check that determines which context instance we should use.
-          return propsContext && propsContext.Consumer && reactIs_2(React__default['default'].createElement(propsContext.Consumer, null)) ? propsContext : Context;
+          return propsContext && propsContext.Consumer && reactIs_2(React__default.createElement(propsContext.Consumer, null)) ? propsContext : Context;
         }, [propsContext, Context]); // Retrieve the store and ancestor subscription via context, if available
 
         var contextValue = React.useContext(ContextToUse); // The store _must_ exist as either a prop or in context.
@@ -2405,7 +2521,7 @@
           // connected descendants won't update until after this component is done
 
 
-          return _extends({}, contextValue, {
+          return _extends$1({}, contextValue, {
             subscription: subscription
           });
         }, [didStoreComeFromProps, contextValue, subscription]); // We need to force this wrapper component to re-render whenever a Redux store update
@@ -2452,10 +2568,10 @@
         // We memoize the elements for the rendered child component as an optimization.
 
         var renderedWrappedComponent = React.useMemo(function () {
-          return React__default['default'].createElement(WrappedComponent, _extends({}, actualChildProps, {
-            ref: reactReduxForwardedRef
+          return React__default.createElement(WrappedComponent, _extends$1({}, actualChildProps, {
+            ref: forwardedRef
           }));
-        }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]); // If React sees the exact same element reference as last time, it bails out of re-rendering
+        }, [forwardedRef, WrappedComponent, actualChildProps]); // If React sees the exact same element reference as last time, it bails out of re-rendering
         // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
 
         var renderedChild = React.useMemo(function () {
@@ -2463,7 +2579,7 @@
             // If this component is subscribed to store updates, we need to pass its own
             // subscription instance down to our descendants. That means rendering the same
             // Context instance, and putting a different value into the context.
-            return React__default['default'].createElement(ContextToUse.Provider, {
+            return React__default.createElement(ContextToUse.Provider, {
               value: overriddenContextValue
             }, renderedWrappedComponent);
           }
@@ -2474,14 +2590,14 @@
       } // If we're in "pure" mode, ensure our wrapper component only re-renders when incoming props have changed.
 
 
-      var Connect = pure ? React__default['default'].memo(ConnectFunction) : ConnectFunction;
+      var Connect = pure ? React__default.memo(ConnectFunction) : ConnectFunction;
       Connect.WrappedComponent = WrappedComponent;
       Connect.displayName = displayName;
 
       if (forwardRef) {
-        var forwarded = React__default['default'].forwardRef(function forwardConnectRef(props, ref) {
-          return React__default['default'].createElement(Connect, _extends({}, props, {
-            reactReduxForwardedRef: ref
+        var forwarded = React__default.forwardRef(function forwardConnectRef(props, ref) {
+          return React__default.createElement(Connect, _extends$1({}, props, {
+            forwardedRef: ref
           }));
         });
         forwarded.displayName = displayName;
@@ -2661,7 +2777,7 @@
   var defaultMapStateToPropsFactories = [whenMapStateToPropsIsFunction, whenMapStateToPropsIsMissing];
 
   function defaultMergeProps(stateProps, dispatchProps, ownProps) {
-    return _extends({}, ownProps, {}, stateProps, {}, dispatchProps);
+    return _extends$1({}, ownProps, {}, stateProps, {}, dispatchProps);
   }
   function wrapMergePropsFunc(mergeProps) {
     return function initMergePropsProxy(dispatch, _ref) {
@@ -2865,7 +2981,7 @@
       var initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
       var initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
       var initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
-      return connectHOC(selectorFactory, _extends({
+      return connectHOC(selectorFactory, _extends$1({
         // used in error messages
         methodName: 'connect',
         // used to compute Connect's displayName from the wrapped component's displayName.
@@ -5331,7 +5447,7 @@
       return scrolled;
     });
 
-    var droppables = _extends({}, state.dimensions.droppables, toDroppableMap(withScrollChange));
+    var droppables = _extends({}, state.dimensions.droppables, {}, toDroppableMap(withScrollChange));
 
     var updatedAdditions = toDraggableMap(adjustAdditionsForScrollChanges({
       additions: published.additions,
@@ -5339,7 +5455,7 @@
       viewport: state.viewport
     }));
 
-    var draggables = _extends({}, state.dimensions.draggables, updatedAdditions);
+    var draggables = _extends({}, state.dimensions.draggables, {}, updatedAdditions);
 
     published.removals.forEach(function (id) {
       delete draggables[id];
@@ -8293,7 +8409,7 @@
     return registry;
   }
 
-  var StoreContext = React__default['default'].createContext(null);
+  var StoreContext = React__default.createContext(null);
 
   var getBodyElement = (function () {
     var body = document.body;
@@ -8409,11 +8525,11 @@
     return id;
   }
 
-  var AppContext = React__default['default'].createContext(null);
+  var AppContext = React__default.createContext(null);
 
   var peerDependencies = {
-  	react: "^16.8.5",
-  	"react-dom": "^16.8.5"
+  	react: ">=16.8.5 <=18.2.0",
+  	"react-dom": ">=16.8.5 <=18.2.0"
   };
 
   var semver = /(\d+)\.(\d+)\.(\d+)/;
@@ -8501,7 +8617,7 @@
 
   function useStartupValidation() {
     useDevSetupWarning(function () {
-      checkReactVersion(peerDependencies.react, React__default['default'].version);
+      checkReactVersion(peerDependencies.react, React__default.version);
       checkDoctype(document);
     }, []);
   }
@@ -9919,9 +10035,9 @@
     React.useEffect(function () {
       return tryResetStore;
     }, [tryResetStore]);
-    return React__default['default'].createElement(AppContext.Provider, {
+    return React__default.createElement(AppContext.Provider, {
       value: appContext
-    }, React__default['default'].createElement(Provider, {
+    }, React__default.createElement(Provider, {
       context: StoreContext,
       store: store
     }, props.children));
@@ -9944,8 +10060,8 @@
   function DragDropContext(props) {
     var contextId = useInstanceCount();
     var dragHandleUsageInstructions = props.dragHandleUsageInstructions || preset.dragHandleUsageInstructions;
-    return React__default['default'].createElement(ErrorBoundary, null, function (setCallbacks) {
-      return React__default['default'].createElement(App, {
+    return React__default.createElement(ErrorBoundary, null, function (setCallbacks) {
+      return React__default.createElement(App, {
         nonce: props.nonce,
         contextId: contextId,
         setCallbacks: setCallbacks,
@@ -10511,7 +10627,7 @@
       animate: props.animate,
       placeholder: props.placeholder
     });
-    return React__default['default'].createElement(props.placeholder.tagName, {
+    return React__default.createElement(props.placeholder.tagName, {
       style: style,
       'data-rbd-placeholder-context-id': contextId,
       onTransitionEnd: onSizeChangeEnd,
@@ -10519,9 +10635,9 @@
     });
   }
 
-  var Placeholder$1 = React__default['default'].memo(Placeholder);
+  var Placeholder$1 = React__default.memo(Placeholder);
 
-  var DroppableContext = React__default['default'].createContext(null);
+  var DroppableContext = React__default.createContext(null);
 
   function checkIsValidInnerRef(el) {
     !(el && isHtmlElement(el)) ?  invariant(false, "\n    provided.innerRef has not been provided with a HTMLElement.\n\n    You can find a guide on using the innerRef callback functions at:\n    https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/guides/using-inner-ref.md\n  ")  : void 0;
@@ -10665,7 +10781,7 @@
     };
 
     return AnimateInOut;
-  }(React__default['default'].PureComponent);
+  }(React__default.PureComponent);
 
   var zIndexOptions = {
     dragging: 5000,
@@ -11208,13 +11324,13 @@
       return null;
     }
 
-    return React__default['default'].createElement(ConnectedDraggable, props);
+    return React__default.createElement(ConnectedDraggable, props);
   }
   function PublicDraggable(props) {
     var isEnabled = typeof props.isDragDisabled === 'boolean' ? !props.isDragDisabled : true;
     var canDragInteractiveElements = Boolean(props.disableInteractiveElementBlocking);
     var shouldRespectForcePress = Boolean(props.shouldRespectForcePress);
-    return React__default['default'].createElement(PrivateDraggable, _extends({}, props, {
+    return React__default.createElement(PrivateDraggable, _extends({}, props, {
       isClone: false,
       isEnabled: isEnabled,
       canDragInteractiveElements: canDragInteractiveElements,
@@ -11275,14 +11391,14 @@
       ignoreContainerClipping: ignoreContainerClipping,
       getDroppableRef: getDroppableRef
     });
-    var placeholder = React__default['default'].createElement(AnimateInOut, {
+    var placeholder = React__default.createElement(AnimateInOut, {
       on: props.placeholder,
       shouldAnimate: props.shouldAnimatePlaceholder
     }, function (_ref) {
       var onClose = _ref.onClose,
           data = _ref.data,
           animate = _ref.animate;
-      return React__default['default'].createElement(Placeholder$1, {
+      return React__default.createElement(Placeholder$1, {
         placeholder: data,
         onClose: onClose,
         innerRef: setPlaceholderRef,
@@ -11317,7 +11433,7 @@
 
       var dragging = useClone.dragging,
           render = useClone.render;
-      var node = React__default['default'].createElement(PrivateDraggable, {
+      var node = React__default.createElement(PrivateDraggable, {
         draggableId: dragging.draggableId,
         index: dragging.source.index,
         isClone: true,
@@ -11327,10 +11443,10 @@
       }, function (draggableProvided, draggableSnapshot) {
         return render(draggableProvided, draggableSnapshot, dragging);
       });
-      return ReactDOM__default['default'].createPortal(node, getContainerForClone());
+      return ReactDOM__default.createPortal(node, getContainerForClone());
     }
 
-    return React__default['default'].createElement(DroppableContext.Provider, {
+    return React__default.createElement(DroppableContext.Provider, {
       value: droppableContext
     }, children(provided, snapshot), getClone());
   }

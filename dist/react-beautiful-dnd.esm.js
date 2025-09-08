@@ -44,7 +44,7 @@ var error = log.bind(null, 'error');
 function noop() {}
 
 function getOptions(shared, fromBinding) {
-  return _extends({}, shared, fromBinding);
+  return _extends({}, shared, {}, fromBinding);
 }
 
 function bindEvents(el, bindings, sharedOptions) {
@@ -2467,7 +2467,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
     return scrolled;
   });
 
-  var droppables = _extends({}, state.dimensions.droppables, toDroppableMap(withScrollChange));
+  var droppables = _extends({}, state.dimensions.droppables, {}, toDroppableMap(withScrollChange));
 
   var updatedAdditions = toDraggableMap(adjustAdditionsForScrollChanges({
     additions: published.additions,
@@ -2475,7 +2475,7 @@ var publishWhileDraggingInVirtual = (function (_ref) {
     viewport: state.viewport
   }));
 
-  var draggables = _extends({}, state.dimensions.draggables, updatedAdditions);
+  var draggables = _extends({}, state.dimensions.draggables, {}, updatedAdditions);
 
   published.removals.forEach(function (id) {
     delete draggables[id];
@@ -5524,8 +5524,8 @@ function useHiddenTextElement(_ref2) {
 var AppContext = React.createContext(null);
 
 var peerDependencies = {
-	react: "^16.8.5",
-	"react-dom": "^16.8.5"
+	react: ">=16.8.5 <=18.2.0",
+	"react-dom": ">=16.8.5 <=18.2.0"
 };
 
 var semver = /(\d+)\.(\d+)\.(\d+)/;
